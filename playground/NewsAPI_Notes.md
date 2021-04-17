@@ -33,4 +33,14 @@ See `GoogleNewsPackage.ipynb`. There is a free python package at https://github.
 Free plan: 3 request/hour on Rapid API. 
 
 
+#### 6. Hacker News API:
+
+This is not for general search usage. Only support search by item id and user (specific for a database?)
+
+#### 7. NewsAPI:
+
+Not on Rapid API anymore. But the company itself provide a user-friendly API. But the search results(including the description and content texts) are not very satisfying.
+
+Free plan: 100 requests per day
+
 
