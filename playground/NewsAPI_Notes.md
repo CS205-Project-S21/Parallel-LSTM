@@ -10,11 +10,27 @@ See `BingNewsAPI.ipynb`. One fatal defect is, this API does not support search b
 Free plan: 1000/month
 
 #### 2. Contextual Web Search
-See `ContextualWebSearchAPI.ipynb`. This API provides everything we want: search by keyword and date range, accurate publish date, url and provider, even good excerpt and full body text.  
+See `ContextualWebSearchAPI.ipynb`. This API provides everything we want: search by keyword and date range, accurate publish date, url and provider, even good excerpt and full body text.  Latency ~ 1700ms
 
 Free plan: 100/day
 
+#### 3. Newslit
 
+Free plan: 25/month; Not acceptable...
+
+#### 4. Newscatcher
+See `NewsCather.ipynb`  
+
+Super low latency (In fact I personally can't feel the difference...) ~ 358ms. It has specific search for publicly traded company (search by ticker); Can specify the source during search;  
+
+Results are good, with clear date and good summary words.
+
+Free plan: 21 request/hour; One request return at most 5 articles back
+
+#### 5. Google News API: 
+See `GoogleNewsPackage.ipynb`. There is a free python package at https://github.com/Iceloof/GoogleNews, but the output is problematic (for example, the search date doesn't make sense).
+
+Free plan: 3 request/hour on Rapid API. 
 
 
 
