@@ -1,7 +1,7 @@
 import re
 
-from newsapi import NewsApiClient
 import pandas as pd
+from newsapi import NewsApiClient
 
 newsapi = NewsApiClient(api_key='8da77fe9e98040aca8510d665750cb70')
 
