@@ -7,5 +7,14 @@ This is a note after playing with 10 news API recommended from https://rapidapi.
 #### 1. Bing News Search
 See `BingNewsAPI.ipynb`. One fatal defect is, this API does not support search by explicit date range, only freshness. Otherwise, it has good info structure with a short description text. 
 
+Free plan: 1000/month
+
+#### 2. Contextual Web Search
+See `ContextualWebSearchAPI.ipynb`. This API provides everything we want: search by keyword and date range, accurate publish date, url and provider, even good excerpt and full body text.  
+
+Free plan: 100/day
+
+
+
 
 
