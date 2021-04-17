@@ -2,7 +2,7 @@ This is a note after playing with 10 news API recommended from https://rapidapi.
 
 **What we want:** Simplicity and user-friendly (with Python client), Support key-word search (for stock-related news), Provide news date (for integration with time series stock price data), Free (at least for several hundred requests per day), Great if provide full text/short excerpt (for accurate sentiment analysis).
 
-**Conclusion:**
+**Conclusion:** We should combine *Contextual Web Search*, *Newscatcher* and *NewsAPI*
 
 #### 1. Bing News Search
 See `BingNewsAPI.ipynb`. One fatal defect is, this API does not support search by explicit date range, only freshness. Otherwise, it has good info structure with a short description text. 
@@ -30,6 +30,8 @@ Free plan: 21 request/hour; One request return at most 5 articles back
 #### 5. Google News API: 
 See `GoogleNewsPackage.ipynb`. There is a free python package at https://github.com/Iceloof/GoogleNews, but the output is problematic (for example, the search date doesn't make sense).
 
+The latency is large. 
+
 Free plan: 3 request/hour on Rapid API. 
 
 
@@ -38,9 +40,16 @@ Free plan: 3 request/hour on Rapid API.
 This is not for general search usage. Only support search by item id and user (specific for a database?)
 
 #### 7. NewsAPI:
+See `NewsAPI.ipynb`.
 
 Not on Rapid API anymore. But the company itself provide a user-friendly API. But the search results(including the description and content texts) are not very satisfying.
 
 Free plan: 100 requests per day
 
+#### 8. Breaking News by MyAllies
+It only support search news by company "symbol". And the latency is super large ~ 4000ms
+
+#### 9 and 10. Guardian and FinancialTimes
+
+Unacceptable latency and too narrow search range.
 
