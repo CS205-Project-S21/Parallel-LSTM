@@ -4,7 +4,7 @@ from pyspark.sql import functions as f
 spark = SparkSession.builder.master('local').appName('NewsSentimentAnalysis').getOrCreate()
 
 # read csv
-df = spark.read.csv('ticker_RIOT.csv', header=True)
+df = spark.read.csv('../data/ticker_RIOT.csv', header=True)
 
 df = df.withColumn('Date', f.to_timestamp(df['Date'], 'yyyy-MM-dd'))
 
