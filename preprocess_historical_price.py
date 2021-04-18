@@ -24,4 +24,6 @@ df = df.groupBy(f.window('Date', window_duration, slide_duration)) \
     .agg(f.collect_list('Open')) \
     .withColumnRenamed('collect_list(Open)', 'sliding_window')
 
+# 
+
 print(df.show())
