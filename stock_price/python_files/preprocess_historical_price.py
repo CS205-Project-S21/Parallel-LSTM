@@ -46,4 +46,4 @@ def normalize(x):
 
 df = df.withColumn('sliding_window', normalize(df['sliding_window']))
 
-print([(row['window'], np.array(row['sliding_window']).tolist()) for row in df.collect()])
+print([(row['window'], np.array(row['sliding_window']).tolist()) for row in sorted(df.collect())])
