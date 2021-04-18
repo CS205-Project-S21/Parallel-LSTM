@@ -8,7 +8,7 @@ import pandas as pd
 def get_dataset(name_string):
     df_list = list()
     for ticker in name_string:
-        data = yf.download(ticker, group_by="Ticker", period='10d')
+        data = yf.download(ticker, group_by="Ticker", period='20d')
         data['ticker'] = ticker  # add this column becasue the dataframe doesn't contain a column with the ticker
         data.to_csv(f'ticker_{ticker}.csv')  # ticker_AAPL.csv for example
         
@@ -21,4 +21,3 @@ def get_dataset(name_string):
 
 tickerStrings = ['BTC-USD','^IXIC','RIOT']
 df_riot = get_dataset(tickerStrings)
-
