@@ -148,8 +148,5 @@ try:
 except:
     warnings.warn("Fail to get news from NewsAPI Search!")
 
-
-news['dummy'] = [1] * len(news['source'])
-
 df_news = pd.DataFrame(news)
 df_news.to_csv(output_file_name, index=False)
