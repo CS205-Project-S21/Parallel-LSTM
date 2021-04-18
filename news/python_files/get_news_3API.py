@@ -15,7 +15,7 @@ enddate = "2021-04-15T23:59:59"
 output_file_name= "../data/news_small.csv"
 
 # Data Structure for final output
-news = {'source': [], 'author': [], 'time': [], 'title': [''],
+news = {'source': [], 'author': [], 'time': [], 'title': [],
         'description': [], 'content': [], 'url': []}
 
 # 1. Contextual Web Search API, 100 Request per day, 100 articles every time
