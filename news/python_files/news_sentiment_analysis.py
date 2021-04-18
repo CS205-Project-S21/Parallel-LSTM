@@ -3,8 +3,6 @@ from pyspark.sql import functions as f
 from pyspark.sql.types import DoubleType, IntegerType
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-import pandas as pd
-
 spark = SparkSession.builder.master('local').appName('NewsSentimentAnalysis').getOrCreate()
 
 # read csv
