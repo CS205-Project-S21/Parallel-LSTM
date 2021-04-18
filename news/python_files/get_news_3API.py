@@ -1,3 +1,4 @@
+import datetime
 import re
 import requests
 import json
@@ -12,6 +13,7 @@ keyword = "Bitcoin"
 ticker = "TSLA" 
 startdate = "2021-04-15T00:00:00"
 enddate = "2021-04-15T23:59:59"
+date_formats = ['%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S', '%d/%m/%Y %H:%M:%S', '%Y-%m-%dT%H:%M:%SZ']
 output_file_name= "../data/news_small.csv"
 
 # Data Structure for final output
@@ -37,7 +39,12 @@ try:
     for i, article in enumerate(articles1):
         news['source'].append(article['provider']['name'])
         news['author'].append("NotProvided")
-        news['time'].append(article['datePublished'])
+        for date_format in date_formats:
+            try:
+                news['time'].append(datetime.datetime.strptime(article['datePublished'], date_format))
+                break
+            except:
+                continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['description']).strip())
         news['content'].append(re.sub(r'(\r|\n|<.*?>|… \[\+[0-9]+ chars])+', ' ', article['body']).strip())
@@ -65,12 +72,18 @@ try:
     for i, article in enumerate(articles21):
         news['source'].append("NotProvided")
         news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
-        news['time'].append(article['published_date'])
+        for date_format in date_formats:
+            try:
+                news['time'].append(datetime.datetime.strptime(article['published_date'], date_format))
+                break
+            except:
+                continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
         news['content'].append("NotProvided")
         news['url'].append(article['link'])
-except:
+except Exception as e:
+    print(e)
     warnings.warn("Fail to get news from Newscatcher API Stock Search!")
 
 
@@ -92,12 +105,18 @@ try:
     for i, article in enumerate(articles22):
         news['source'].append("NotProvided")
         news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
-        news['time'].append(article['published_date'])
+        for date_format in date_formats:
+            try:
+                news['time'].append(datetime.datetime.strptime(article['published_date'], date_format))
+                break
+            except:
+                continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
         news['content'].append("NotProvided")
         news['url'].append(article['link'])
-except:
+except Exception as e:
+    print(e)
     warnings.warn("Fail to get news from Newscatcher API Keyword Search!")
 
 
@@ -116,7 +135,12 @@ try:
     for i, article in enumerate(articles3):
         news['source'].append(article['source']['name'])
         news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
-        news['time'].append(article['publishedAt'])
+        for date_format in date_formats:
+            try:
+                news['time'].append(datetime.datetime.strptime(article['publishedAt'], date_format))
+                break
+            except:
+                continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['description']).strip())
         news['content'].append(re.sub(r'(\r|\n|<.*?>|… \[\+[0-9]+ chars])+', ' ', article['content']).strip())
@@ -124,6 +148,8 @@ try:
 except:
     warnings.warn("Fail to get news from NewsAPI Search!")
 
+
+news['dummy'] = [1] * len(news['source'])
 
 df_news = pd.DataFrame(news)
 df_news.to_csv(output_file_name, index=False)
