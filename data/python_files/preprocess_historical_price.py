@@ -21,7 +21,7 @@ df = df.withColumn("Open_Close_new", f.split(f.regexp_replace("Open_Close", r"(^
 
 # print([row['Open_Close_new'] for row in df.collect()])
 
-window_duration = '10 day'
+window_duration = '11 day'
 slide_duration = '1 day'
 
 df = df.groupBy(f.window('Date', window_duration, slide_duration)) \
