@@ -64,7 +64,7 @@ try:
 
     for i, article in enumerate(articles21):
         news['source'].append("NotProvided")
-        news['author'].append(article['author'])
+        news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
         news['time'].append(article['published_date'])
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
@@ -91,7 +91,7 @@ try:
 
     for i, article in enumerate(articles22):
         news['source'].append("NotProvided")
-        news['author'].append(article['author'])
+        news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
         news['time'].append(article['published_date'])
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
@@ -115,7 +115,7 @@ try:
 
     for i, article in enumerate(articles3):
         news['source'].append(article['source']['name'])
-        news['author'].append(article['author'])
+        news['author'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', str(article['author'])).strip())
         news['time'].append(article['publishedAt'])
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['description']).strip())
