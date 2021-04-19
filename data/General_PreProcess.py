@@ -153,7 +153,8 @@ df7 = df6.orderBy("TrueDate").groupBy(f.window('TrueDate', window_duration, slid
 df7 = df7.withColumn('NewsScore', f.flatten(df7['NewsScore'])).sort("window")
 
 # Kick out rows with less than num_datapoints data points 
-df7 = df7.withColumn('array_length', f.size("NewsScore")).filter((df7.array_length == 22))
+df7 = df7.withColumn('array_length', f.size("NewsScore"))
+df7 = df7.filter((df7.array_length == num_datapoints)).select(['window', 'NewsScore'])
 # df7.sort(window) looks like:
 # +--------------------+--------------------+
 # |              window|           NewsScore|
