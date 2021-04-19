@@ -11,10 +11,10 @@ NEWS_API_KEY = '7b294a567b694de5b23397387713d7f6'
 
 keyword = "Bitcoin"
 ticker = "TSLA" 
-startdate = "2021-04-15T00:00:00"
+startdate = "2016-04-15T00:00:00"
 enddate = "2021-04-15T23:59:59"
 date_formats = ['%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S', '%d/%m/%Y %H:%M:%S', '%Y-%m-%dT%H:%M:%SZ']
-output_file_name= "../data/news_small.csv"
+output_file_name= "../data/news_large.csv"
 
 # Data Structure for final output
 news = {'source': [], 'author': [], 'time': [], 'title': [],
@@ -80,7 +80,7 @@ try:
                 continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
-        news['content'].append("NotProvided")
+        news['content'].append(' ')
         news['url'].append(article['link'])
 except Exception as e:
     print(e)
@@ -113,7 +113,7 @@ try:
                 continue
         news['title'].append(article['title'])
         news['description'].append(re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['summary']).strip())
-        news['content'].append("NotProvided")
+        news['content'].append(' ')
         news['url'].append(article['link'])
 except Exception as e:
     print(e)
