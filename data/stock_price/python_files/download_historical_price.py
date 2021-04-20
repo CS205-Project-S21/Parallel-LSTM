@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 
 output_name = "../data/profile_test.csv"
-ticker = "RIOT"
+tickerStrings = ['RIOT']
 
 def get_dataset(name_string):
     df_list = list()
@@ -38,7 +38,6 @@ def main():
     edate = datetime.date(2021, 4, 16)
     dates = generate_full_date(sdate, edate)
     count = np.array(dates).shape[0]
-    tickerStrings = ['RIOT']
     df = get_dataset(tickerStrings)
     date_index = df.index.strftime('%Y-%m-%d').tolist()
     df_all_date = {'Date': ['']*count, 'Open': ['']*count, 'Close': ['']*count, 'Ticker': ['']*count}
@@ -63,9 +62,9 @@ def main():
             for j in range(k):
                 df_all_date['Open'][i + j] = s + t/(2*k+1)*(2*j+1)
                 df_all_date['Close'][i + j] = s + t/(2*k+1)*(2*j+2)
-    
+
     df_all_date = pd.DataFrame(df_all_date)
-    df_all_date.to_csv("alldate_RIOT.csv", index=False)
+    df_all_date.to_csv(output_name, index=False)
 
 if __name__ == '__main__':
     main()
