@@ -15,7 +15,7 @@ def main():
     stockprice_rawdata_path = './stock_price/data/alldate_RIOT.csv'
     news_rawdata_path = './news/data/news_large.csv'
 
-    spark = SparkSession.builder.master('local').appName('GeneralDataProcess').getOrCreate()
+    spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
     window_duration = '11 day'
     slide_duration = '1 day'
