@@ -1,15 +1,17 @@
-import socket
-import requests
-import requests_oauthlib
 import json
+import re
+import socket
 import traceback
 
+import requests
+import requests_oauthlib
+
 # Replace the values below with yours
-# BEARER_TOKEN = AAAAAAAAAAAAAAAAAAAAABG%2FOAEAAAAA7VEry%2Fq75Pgh7kIjeoJ7UeNRv%2Bw%3DhhSXwENXhvplemfWeHPwTi5LRyQIMopfW85Xh6EWGm9eGOBzLR
-ACCESS_TOKEN = '1377470029000810496-yWBWWkBy8tIVutGwPqrOiItSvjMuYt'
-ACCESS_SECRET = 'rGrBEIvOD11s1sCCbuixIUnv4FcC5LysCVEvgOEfTtq36'
-CONSUMER_KEY = 'DuOfmIfUTq18t9FYb2KMpAnkN'
-CONSUMER_SECRET = 'C2Vq7vyqJXgumNOVuFj8HCDtqijc8Vdgf5kw8mmxrbX6UJBtJL'
+# BEARER_TOKEN =
+ACCESS_TOKEN = ''
+ACCESS_SECRET = ''
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
 my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
 keywords = 'bitcoin,coinbase'  # a string that contains keywords separated by comma without space
 
@@ -19,10 +21,10 @@ def send_tweets_to_spark(http_resp, tcp_connection):
         try:
             if not '':
                 full_tweet = json.loads(line)
-                tweet_text = full_tweet['text']
-                print("Tweet Text: " + tweet_text)
+                tweet_text = re.sub(r'(\n)+', ' ', full_tweet['text'])
+                print("Tweet Text: " + repr(tweet_text))
                 print("------------------------------------------")
-                tcp_connection.send((tweet_text + '\n').encode())
+                tcp_connection.send((repr(tweet_text) + '\n').encode())
         except:
             # e = sys.exc_info()[0]
             # print("Error: %s" % e)

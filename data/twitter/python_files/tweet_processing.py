@@ -1,8 +1,5 @@
-import re
-
+import datetime
 from pyspark import SparkConf, SparkContext
-from pyspark.sql import functions as f
-from pyspark.sql.types import DoubleType
 from pyspark.streaming import StreamingContext
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
@@ -13,7 +10,7 @@ conf.setAppName("TwitterStreamApp")
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 # creat the Streaming Context from the above spark context with window size n seconds
-ssc = StreamingContext(sc, 20)
+ssc = StreamingContext(sc, 30)
 # setting a checkpoint to allow RDD recovery
 ssc.checkpoint("checkpoint_TwitterApp")
 # read data from port 9009
@@ -22,19 +19,17 @@ dataStream = ssc.socketTextStream("localhost", 9009)
 # calculate sentiment scores for title, description and content
 analyzer = SentimentIntensityAnalyzer()
 
-
-def preprocess_text(text):
-    return text
-
-
-@f.udf(returnType=DoubleType())
-def calculate_sentiment_score(text):
-    score = analyzer.polarity_scores(text)['compound']
-    return score
+scores = dataStream.map(lambda text: (analyzer.polarity_scores(text)['compound'], 1))
+avg_score = scores.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1])).map(lambda z: z[0] / z[1])
 
 
-text = dataStream.map(calculate_sentiment_score)
-text.pprint(100)
+def save(rdd):
+    with open("../data/twitter_sentiment_scores.txt", 'a', encoding='utf-8') as f:
+        f.write(datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S') + '\t' + str(rdd.collect()[0]) + "\n")
+    return
+
+
+avg_score.foreachRDD(save)
 
 # start the streaming computation
 ssc.start()
