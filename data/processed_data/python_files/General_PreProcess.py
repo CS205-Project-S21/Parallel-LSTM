@@ -10,12 +10,12 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import numpy as np
 import pandas as pd
 
-@profile
-def main():
-    stockprice_rawdata_path = './stock_price/data/alldate_RIOT.csv'
-    news_rawdata_path = './news/data/news_large.csv'
 
-    spark = SparkSession.builder.master('local[1]').appName('GeneralDataProcess').getOrCreate()
+def main():
+    stockprice_rawdata_path = '../../stock_price_Energy/data/alldate_HFC.csv'
+    news_rawdata_path = '../../news_Energy/data/news_large.csv'
+
+    spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
     window_duration = '11 day'
     slide_duration = '1 day'
@@ -186,7 +186,8 @@ def main():
     # |{2016-04-05 20:00...|[0.63157815484152...|[0.0, 0.0, 0.1104...|
     # |{2016-04-06 20:00...|[0.05263151290346...|[0.1104, 0.0, 0.0...|
     # |{2016-04-07 20:00...|[0.21052605161384...|[0.0, 0.0, 0.0, 0...|
-
+    
+    df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy_HFC.csv', index=False)
 if __name__ == '__main__':
     main()
 
