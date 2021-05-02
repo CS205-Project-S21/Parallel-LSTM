@@ -3,9 +3,12 @@ The following codes are developed based on https://github.com/Iceloof/GoogleNews
 I made the following modifications:
 1. Supprt more articles on one page (with a numperpage argument)
 2. Remove unnecessary codes (remove get_news related codes, remove old version API, remove images in the output)
+3. Add a failflag argument to indicate if last page retreive failed
 
-Minhuan Li, May 2 2021
+Minhuan Li, May 2021
 '''
+
+__all__=['GoogleNews']
 
 ### MODULES
 import re
@@ -81,6 +84,7 @@ class GoogleNews:
         self.__end = end
         self.__encode = encode
         self.__numperpage = numperpage
+        self.__failflag = 0
 
     def set_lang(self, lang):
         self.__lang = lang
@@ -129,6 +133,7 @@ class GoogleNews:
         page = number of the page to be retrieved
         """
         results = []
+        self.__failflag = 0
         try:
             if self.__start != "" and self.__end != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
@@ -170,10 +175,11 @@ class GoogleNews:
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
+            self.__failflag = 1
             pass
         return results
 
@@ -184,6 +190,7 @@ class GoogleNews:
         Parameter:
         page = number of the page to be retrieved 
         """
+        self.__failflag = 0
         try:
             if self.__start != "" and self.__end != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
@@ -225,14 +232,18 @@ class GoogleNews:
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #self.__results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                self.__results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
+            self.__failflag = 1
             pass
 
     def total_count(self):
         return self.__totalcount
+
+    def failflag(self):
+        return self.__failflag
 
     def results(self,sort=False):
         """Returns the __results.

@@ -2,3 +2,4 @@
 .DS_Store
 .idea
 data/twitter/python_files/checkpoint_TwitterApp/
+__pycache__/
