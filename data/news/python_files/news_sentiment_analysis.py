@@ -6,9 +6,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 spark = SparkSession.builder.master('local').appName('NewsSentimentAnalysis').getOrCreate()
 
 # read csv
-df = spark.read.csv('../data/news_small.csv', header=True)
-# TODO: debug
-# print(df.show())
+df = spark.read.csv('../data/news_small.csv', header=True, escape='"')
 
 # extract hour from time
 df = df.withColumn('time', f.to_timestamp(df['time'], 'yyyy-MM-dd HH:mm:ss'))
