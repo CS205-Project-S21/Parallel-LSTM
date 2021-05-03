@@ -5,6 +5,7 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 ![](./docs/pictures/workflow.png)
 ## 2. Directory structure
 
+```
 ├── LSTM_DP_altered.ipynb
 ├── LSTM_DP_altered.py
 ├── README.md
@@ -80,7 +81,8 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
     ├── __pycache__
     │   └── fetchgooglenews.cpython-38.pyc
     └── fetchgooglenews.py
-    
+```
+
 ## 2. Instructions for running
 ## 2. Preprocessing of Data
 ### 2.1 Raw Data
