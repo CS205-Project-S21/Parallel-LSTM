@@ -173,6 +173,11 @@ class GoogleNews:
                 #    tmp_img = item.findAll("g-img")[0].find("img").get("src")
                 #except Exception:
                 #    tmp_img = ''
+                if define_date(tmp_date).date() > datetime.datetime.strptime(self.__end, "%m/%d/%Y").date():
+                    continue
+                if define_date(tmp_date).date() < datetime.datetime.strptime(self.__start, "%m/%d/%Y").date():
+                    continue  
+                    
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
@@ -234,9 +239,14 @@ class GoogleNews:
                 #    tmp_img = item.findAll("g-img")[0].find("img").get("src")
                 #except Exception:
                 #    tmp_img = ''
+                if define_date(tmp_date).date() > datetime.datetime.strptime(self.__end, "%m/%d/%Y").date():
+                    continue
+                if define_date(tmp_date).date() < datetime.datetime.strptime(self.__start, "%m/%d/%Y").date():
+                    continue                
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #self.__results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
+                
                 if self.__duplicate:
                     self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
                     self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date)+datetime.timedelta(hours=8),'desc': tmp_desc, 'link': tmp_link})
