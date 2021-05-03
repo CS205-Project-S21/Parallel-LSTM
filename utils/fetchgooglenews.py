@@ -4,6 +4,8 @@ I made the following modifications:
 1. Supprt more articles on one page (with a numperpage argument)
 2. Remove unnecessary codes (remove get_news related codes, remove old version API, remove images in the output)
 3. Add a failflag argument to indicate if last page retreive failed
+4. Add a duplicate argument to copy the article twice, for open and close price
+5. Kick out the articles not in date range 
 
 Minhuan Li, May 2021
 '''
@@ -177,7 +179,7 @@ class GoogleNews:
                     continue
                 if define_date(tmp_date).date() < datetime.datetime.strptime(self.__start, "%m/%d/%Y").date():
                     continue  
-                    
+
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
