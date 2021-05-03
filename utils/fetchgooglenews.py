@@ -61,7 +61,7 @@ def define_date(date):
             for month in months.keys():
                 if month.lower()+' ' in date.lower():
                     date_list = date.replace(',','').split()[-3:]
-                    return datetime.datetime(day=int(date_list[1]), month=months[month], year=int(date_list[2]))
+                    return datetime.datetime(day=int(date_list[1]), month=months[month], year=int(date_list[2]), hour=4)
     except:
         return float('nan')
 
@@ -70,7 +70,7 @@ def define_date(date):
 
 class GoogleNews:
 
-    def __init__(self,lang="en",period="",start="",end="",encode="utf-8", numperpage=50):
+    def __init__(self,lang="en",period="",start="",end="",encode="utf-8", numperpage=50, duplicate=False):
         self.__texts = []
         self.__links = []
         self.__results = []
@@ -85,6 +85,7 @@ class GoogleNews:
         self.__encode = encode
         self.__numperpage = numperpage
         self.__failflag = 0
+        self.__duplicate = duplicate
 
     def set_lang(self, lang):
         self.__lang = lang
@@ -175,7 +176,11 @@ class GoogleNews:
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                if self.__duplicate:
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date)+datetime.timedelta(hours=8),'desc': tmp_desc, 'link': tmp_link})
+                else:
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
@@ -232,7 +237,11 @@ class GoogleNews:
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #self.__results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                if self.__duplicate:
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date)+datetime.timedelta(hours=8),'desc': tmp_desc, 'link': tmp_link})
+                else:
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
