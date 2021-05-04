@@ -8,6 +8,8 @@ Minhuan Li, May 2021
 import requests
 import json
 import re
+import datetime
+
 def fetch_context_web(keywords, startdate, enddate, page=1):
     # Contextual Web Search API, 100 Request per day, 50 articles every time
     RAPID_API_KEY = '67f58679fcmsh1d5d86c70be0778p1320e2jsn414d9154fae0'
@@ -16,7 +18,7 @@ def fetch_context_web(keywords, startdate, enddate, page=1):
     fail_flag = 0
     
     url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI"
-    querystring1 = {"q":keyword,"pageNumber":"{}".format(page),"pageSize":"50","autoCorrect":"true","fromPublishedDate":startdate,
+    querystring1 = {"q":keywords,"pageNumber":"{}".format(page),"pageSize":"50","autoCorrect":"true","fromPublishedDate":startdate,
                    "toPublishedDate":enddate}
     headers1 = {
         'x-rapidapi-key': RAPID_API_KEY,
@@ -42,7 +44,7 @@ def fetch_context_web(keywords, startdate, enddate, page=1):
                     continue
             tmp_desc = re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['description'] + ' ' + re.sub(r'(\r|\n|<.*?>|… \[\+[0-9]+ chars])+', ' ', article['body']).strip()).strip()
             tmp_link = article['url']
-            results.append({'title': tmp_title, 'source': tmp_source,'date': tmp_date,'datetime':tmp_datetime,'desc': tmp_desc, 'link': tmp_link})
+            results.append({'title': tmp_title, 'source': tmp_source,'date': tmp_date, 'datetime':tmp_datetime,'desc': tmp_desc, 'link': tmp_link})
     except Exception as e:
         print(e)
         fail_flag = 1
