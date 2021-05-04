@@ -139,8 +139,8 @@ class GoogleNews:
         self.__failflag = 0
         try:
             if self.__start != "" and self.__end != "":
-                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
-                self.url = "https://www.google.com/search?q={}&rlz=1C5CHFA_{}US916US916&tbs=cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&rlz=1C5CHFA_enUS916US916&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
             elif self.__period != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},qdr:{},,sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__period,(self.__numperpage * (page - 1)),self.__numperpage) 
             else:
@@ -206,8 +206,8 @@ class GoogleNews:
         self.__failflag = 0
         try:
             if self.__start != "" and self.__end != "":
-                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
-                self.url = "https://www.google.com/search?q={}&rlz=1C5CHFA_{}US916US916&tbs=cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&rlz=1C5CHFA_enUS916US916&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
             elif self.__period != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},qdr:{},,sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__period,(self.__numperpage * (page - 1)),self.__numperpage) 
             else:
