@@ -6,6 +6,7 @@ from pyspark.streaming import StreamingContext
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 category = 'cryptocurrency'
+# category = 'energy'
 # category = 'test_for_fun'
 
 # create spark configuration

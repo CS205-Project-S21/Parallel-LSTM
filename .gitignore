@@ -2,4 +2,5 @@
 .DS_Store
 .idea
 data/twitter/data/historical/cryptocurrency/raw/
+data/twitter/data/historical/energy/raw/
 __pycache__/

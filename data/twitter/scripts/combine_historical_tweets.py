@@ -14,7 +14,7 @@ years = np.array([2021])
 months = np.array([1, 2, 3, 4])
 days = np.arange(1, 32)
 hours = np.array([9, 16])
-dir_prefix = "../data/historical/cryptocurrency"
+dir_prefix = "../data/historical/energy"
 
 historical_tweets = {'created_at': [], 'text': []}
 

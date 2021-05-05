@@ -19,13 +19,15 @@ CONSUMER_KEY = ''
 CONSUMER_SECRET = ''
 my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
 url = 'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
-query = 'bitcoin price'
+# query = 'bitcoin price'
+# dir_prefix = "../data/historical/cryptocurrency/raw"
+query = 'oil gas energy'
+dir_prefix = "../data/historical/energy/raw"
 maxResults = 100
 years = np.array([2021])
 months = np.array([1, 2, 3, 4])
 days = np.arange(1, 32)
 hours = np.array([9, 16])
-dir_prefix = "../data/historical/cryptocurrency/raw"
 
 for year in years:
     for month in months:
@@ -42,7 +44,7 @@ for year in years:
                             fromDate = (dt - datetime.timedelta(hours=7)).strftime('%Y%m%d%H%M')
                         toDate = dt.strftime('%Y%m%d%H%M')
                         # check whether file exists to prevent duplicate requests
-                        if not os.path.isfile("../data/historical/" + fromDate + "_" + toDate + ".json"):
+                        if not os.path.isfile(dir_prefix + "/" + fromDate + "_" + toDate + ".json"):
                             query_data = [('query', query), ('fromDate', fromDate), ('toDate', toDate),
                                           ('maxResults', maxResults)]
                             query_url = url + '?' + '&'.join([str(t[0]) + '=' + str(t[1]) for t in query_data])
@@ -57,4 +59,4 @@ for year in years:
                             # sleep for 2s
                             time.sleep(2)
                 except Exception as e:
-                    traceback.print_exc()
+                    print(e)

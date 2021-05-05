@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 category = 'cryptocurrency'
 keywords = 'bitcoin,coinbase'
+# category = 'energy'
+# keywords = 'oil,gas,energy'
 # category = 'test_for_fun'
 # keywords = 'Bill Gates'
 

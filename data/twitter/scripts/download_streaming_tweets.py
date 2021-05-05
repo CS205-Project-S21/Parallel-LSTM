@@ -7,12 +7,13 @@ import requests
 import requests_oauthlib
 
 # Replace the values below with yours
-ACCESS_TOKEN = ''
-ACCESS_SECRET = ''
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
+ACCESS_TOKEN = '1377470029000810496-yWBWWkBy8tIVutGwPqrOiItSvjMuYt'
+ACCESS_SECRET = 'rGrBEIvOD11s1sCCbuixIUnv4FcC5LysCVEvgOEfTtq36'
+CONSUMER_KEY = 'DuOfmIfUTq18t9FYb2KMpAnkN'
+CONSUMER_SECRET = 'C2Vq7vyqJXgumNOVuFj8HCDtqijc8Vdgf5kw8mmxrbX6UJBtJL'
 my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
 keywords = 'bitcoin,coinbase'  # a string that contains keywords separated by comma without space
+# keywords = 'oil,gas,energy'
 # keywords = 'Bill Gates'
 
 
