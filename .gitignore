@@ -1,5 +1,6 @@
 .ipynb_checkpoints
 .DS_Store
 .idea
-data/twitter/python_files/checkpoint_TwitterApp/
+data/twitter/data/historical/cryptocurrency/raw/
+data/twitter/data/historical/energy/raw/
 __pycache__/
