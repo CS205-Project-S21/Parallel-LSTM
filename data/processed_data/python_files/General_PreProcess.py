@@ -13,8 +13,8 @@ import sys
 
 
 def main():
-    stockprice_rawdata_path = '../../stock_price_Energy/data/price_HFC.csv'
-    news_rawdata_path = '../../news_Energy/data/news_large.csv'
+    stockprice_rawdata_path = '../../stock_price_Energy/data/price_COG.csv'
+    news_rawdata_path = '../../news_Energy/data/GoogleNews_Energy_large_all.csv'
 
     spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
@@ -31,7 +31,7 @@ def main():
 
     # copy date to create a new time check colume
     df = df.withColumn('Date', f.to_timestamp(df['Date'], 'yyyy-MM-dd'))
-    df2 = df.withColumn('TrueDate', f.to_timestamp(df['Date'], 'yyyy-MM-dd'))\
+    df2 = df.withColumn('TrueDate', f.to_timestamp(df['Date'], 'yyyy-MM-dd')) \
         .withColumn('TrueDate_existent', f.to_timestamp(df['Date'], 'yyyy-MM-dd'))
     df2 = df2.select('TrueDate', 'Type', 'Price', 'Truedate_existent')
 
@@ -82,17 +82,16 @@ def main():
     readtime_next = f.first(df3['Truedate_existent'], ignorenulls=True).over(window_bf)
 
     # add columns to the dataframe
-    df_filled = df3.withColumn('readvalue_ff', read_last)\
-        .withColumn('readtime_ff', readtime_last)\
-        .withColumn('readvalue_bf', read_next)\
+    df_filled = df3.withColumn('readvalue_ff', read_last) \
+        .withColumn('readtime_ff', readtime_last) \
+        .withColumn('readvalue_bf', read_next) \
         .withColumn('readtime_bf', readtime_next)
 
     # Price interpolation between all empty time
     df_filled_temp = df_filled.withColumn('if_open', f.when(f.col('Type') == 'Open', 1).otherwise(0))
-    df_filled2 = df_filled_temp.withColumn('Price_interpol', f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price'))\
-                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff'))\
-                                                      / (f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast("long") - 43200)\
-                                                      * (f.col('TrueDate').cast("long") - f.col('readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col('readvalue_ff')))
+    df_filled2 = df_filled_temp.withColumn('Price_interpol',
+                                           f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price')) \
+                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast("long") - 43200) * (f.col('TrueDate').cast("long") - f.col('readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col('readvalue_ff')))
     df4 = df_filled2.select('TrueDate', 'Type', 'Price_interpol')
 
     # df4 looks like:
@@ -109,12 +108,12 @@ def main():
     # use the following to combine open and close into an array
     w = Window.partitionBy('TrueDate').orderBy(f.desc('Type'))
     df5 = df4.withColumn(
-        'Open_Close', f.collect_list('Price_interpol').over(w))\
+        'Open_Close', f.collect_list('Price_interpol').over(w)) \
         .groupBy('TrueDate').agg(f.max('Open_Close').alias('Open_Close'))
 
     # Create a time window, and collect to form a larger array
-    df6 = df5.orderBy("TrueDate").groupBy(f.window('TrueDate', window_duration, slide_duration))\
-        .agg(f.collect_list('Open_Close'))\
+    df6 = df5.orderBy("TrueDate").groupBy(f.window('TrueDate', window_duration, slide_duration)) \
+        .agg(f.collect_list('Open_Close')) \
         .withColumnRenamed('collect_list(Open_Close)', 'StockPrice')
     df6 = df6.withColumn('StockPrice', f.flatten(df6['StockPrice']).cast("array<double>")).sort("window")
 
@@ -126,8 +125,6 @@ def main():
         x = np.array(x)
         x_normalized = ((x - np.min(x)) / (np.max(x) - np.min(x))).tolist()
         return x_normalized
-
-    
 
     # Kick out rows with less than num_datapoints data points
     df6 = df6.withColumn('array_length', f.size("StockPrice"))
@@ -146,7 +143,7 @@ def main():
 
     ##########################################  2. For sentiment analysis ###################################################
     df7 = spark.read.csv(news_rawdata_path, header=True, escape='"')
-    df7 = df7.withColumn('time', f.to_timestamp(df7['time'], 'yyyy-MM-dd HH:mm:ss'))
+    df7 = df7.withColumn('time', f.to_timestamp(df7['datetime'], 'yyyy-MM-dd HH:mm:ss'))
     df7 = df7.withColumn('hour', f.hour(f.col('time')))
     df7 = df7.withColumn('Day', f.to_date(df7['time'], format='yyyy-MM-dd'))
 
@@ -154,7 +151,7 @@ def main():
     def connect_string(a, b):
         return a + ' ' + b
 
-    df7 = df7.withColumn('AllText', connect_string(connect_string(df7['title'], df7['desc'])))
+    df7 = df7.withColumn('AllText', connect_string(df7['title'], df7['desc']))
     df8 = df7.select('Day', 'hour', 'Alltext')
     df8 = df8.withColumn('TrueDate', when(df8.hour < 9, df8['Day'])
                          .when(df8.hour >= 16, f.date_add(df8['Day'], 1))
@@ -173,20 +170,6 @@ def main():
 
     df9 = df8.withColumn('score', calculate_sentiment_score(df8['Alltext']))
     df9 = df9.groupBy(['TrueDate', 'Type']).agg(f.avg("score").alias("AverageScore"))
-    # df10 = df9.orderBy("TrueDate", f.desc("Type")) # We should avoid any unnecessary sort or orderBy in pipeline
-    # df9 look like:
-    # +----------+-----+-------------------+
-    # |  TrueDate| Type|       AverageScore|
-    # +----------+-----+-------------------+
-    # |2021-03-31| Open| 0.6719461538461545|
-    # |2021-04-03| Open| 0.2891708333333335|
-    # |2016-07-05| Open|             0.9879|
-    # |2021-03-29|Close| 0.3657036496350363|
-    # |2021-04-06| Open|  0.646568817204301|
-    # |2016-10-05| Open|             0.9509|
-    # |2016-05-27| Open|              0.999|
-    # |2021-04-14|Close|-0.3307480769230771|
-    # We need to find a way to fill in the missing rows with 0
 
     # Fill the missing row with help of a full dateframe
     full_dict = {'TrueDate': [], 'Type': []}
@@ -199,21 +182,6 @@ def main():
     df_ref = spark.createDataFrame(df_ref_pd)
     df10 = df_ref.join(df9, on=['TrueDate', 'Type'], how='left_outer')
     df10 = df10.na.fill(value=0, subset=["AverageScore"])
-    # df10 looks like:
-    # +----------+-----+------------+
-    # |  TrueDate| Type|AverageScore|
-    # +----------+-----+------------+
-    # |2016-03-31| Open|         0.0|
-    # |2016-03-31|Close|         0.0|
-    # |2016-04-01| Open|         0.0|
-    # |2016-04-01|Close|         0.0|
-    # |2016-04-02| Open|     -0.1307|
-    # |2016-04-02|Close|         0.0|
-    # |2016-04-03| Open|         0.0|
-    # |2016-04-03|Close|         0.0|
-    # |2016-04-04| Open|      0.9878|
-    # |2016-04-04|Close|         0.0|
-    # |2016-04-05| Open|     -0.1027|
 
     # use the following to combine open and close into an array
     w = Window.partitionBy('TrueDate').orderBy(f.desc('Type'))
@@ -231,18 +199,6 @@ def main():
     # Kick out rows with less than num_datapoints data points
     df12 = df12.withColumn('array_length', f.size("NewsScore"))
     df12 = df12.filter((df12.array_length == num_datapoints)).select(['window', 'NewsScore'])
-    # df12.sort(window) looks like:
-    # +--------------------+--------------------+
-    # |              window|           NewsScore|
-    # +--------------------+--------------------+
-    # |{2016-03-30 20:00...|[0.0, 0.0, 0.0, 0...|
-    # |{2016-03-31 20:00...|[0.0, 0.0, -0.130...|
-    # |{2016-04-01 20:00...|[-0.1307, 0.0, 0....|
-    # |{2016-04-02 20:00...|[0.0, 0.0, 0.9878...|
-    # |{2016-04-03 20:00...|[0.9878, 0.0, -0....|
-    # |{2016-04-04 20:00...|[-0.1027, 0.0, 0....|
-    # |{2016-04-05 20:00...|[0.0, 0.0, 0.1104...|
-    # |{2016-04-06 20:00...|[0.1104, 0.0, 0.0...|
 
     ##########################################  3. Combine df6 and df12 ################################################
     df_final = df6.join(df12, on=['window'], how='left_outer')
@@ -260,9 +216,7 @@ def main():
     # |{2016-04-05 20:00...|[0.63157815484152...|[0.0, 0.0, 0.1104...|
     # |{2016-04-06 20:00...|[0.05263151290346...|[0.1104, 0.0, 0.0...|
     # |{2016-04-07 20:00...|[0.21052605161384...|[0.0, 0.0, 0.0, 0...|
-
-    df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy_HFC.csv', index=False)
-
+    df_final.orderBy('window').toPandas().to_csv('processed_data_energy_COG.csv', index=False)
 
 if __name__ == '__main__':
     main()
