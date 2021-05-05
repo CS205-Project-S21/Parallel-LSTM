@@ -2,7 +2,7 @@
 The Energy stocks: https://www.investopedia.com/top-energy-stocks-4582081
 We choose the following 3 famous Energy stocks:
 - Devon Energy Corp. (DVN)
-- Chesapeake Energy Corp. (CHK)
+- Cabot Oil & Gas Corp. ( COG)
 - HollyFrontier Corp. (HFC)
 '''
 
