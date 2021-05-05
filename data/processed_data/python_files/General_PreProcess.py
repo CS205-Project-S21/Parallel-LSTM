@@ -154,7 +154,7 @@ def main():
     def connect_string(a, b):
         return a + ' ' + b
 
-    df7 = df7.withColumn('AllText', connect_string(connect_string(df7['title'], df7['description']), df7['content']))
+    df7 = df7.withColumn('AllText', connect_string(connect_string(df7['title'], df7['desc'])))
     df8 = df7.select('Day', 'hour', 'Alltext')
     df8 = df8.withColumn('TrueDate', when(df8.hour < 9, df8['Day'])
                          .when(df8.hour >= 16, f.date_add(df8['Day'], 1))
