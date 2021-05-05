@@ -1,7 +1,6 @@
 import datetime
 import json
 import re
-import traceback
 
 import numpy as np
 import pandas as pd
@@ -15,7 +14,7 @@ years = np.array([2021])
 months = np.array([1, 2, 3, 4])
 days = np.arange(1, 32)
 hours = np.array([9, 16])
-dir_prefix = "../data/historical/cryptocurrency/raw"
+dir_prefix = "../data/historical/cryptocurrency"
 
 historical_tweets = {'created_at': [], 'text': []}
 
@@ -36,7 +35,7 @@ for year in years:
                         toDate = dt.strftime('%Y%m%d%H%M')
 
                         # load json
-                        with open(dir_prefix + "/" + fromDate + "_" + toDate + ".json", 'r') as f:
+                        with open(dir_prefix + "/raw/" + fromDate + "_" + toDate + ".json", 'r') as f:
                             tweets = json.load(f)
 
                             for tweet in tweets:
@@ -51,7 +50,7 @@ for year in years:
                                 historical_tweets['created_at'].append(created_at)
                                 historical_tweets['text'].append(text)
                 except Exception as e:
-                    traceback.print_exc()
+                    print(e)
 
 df_historical_tweets = pd.DataFrame(historical_tweets)
-df_historical_tweets.to_csv("../data/historical/cryptocurrency/bitcoin_tweets.csv", index=False)
+df_historical_tweets.to_csv(dir_prefix + "/tweets.csv", index=False)
