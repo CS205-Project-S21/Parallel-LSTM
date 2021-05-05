@@ -4,6 +4,8 @@ I made the following modifications:
 1. Supprt more articles on one page (with a numperpage argument)
 2. Remove unnecessary codes (remove get_news related codes, remove old version API, remove images in the output)
 3. Add a failflag argument to indicate if last page retreive failed
+4. Add a duplicate argument to copy the article twice, for open and close price
+5. Kick out the articles not in date range 
 
 Minhuan Li, May 2021
 '''
@@ -61,7 +63,7 @@ def define_date(date):
             for month in months.keys():
                 if month.lower()+' ' in date.lower():
                     date_list = date.replace(',','').split()[-3:]
-                    return datetime.datetime(day=int(date_list[1]), month=months[month], year=int(date_list[2]))
+                    return datetime.datetime(day=int(date_list[1]), month=months[month], year=int(date_list[2]), hour=4)
     except:
         return float('nan')
 
@@ -70,7 +72,7 @@ def define_date(date):
 
 class GoogleNews:
 
-    def __init__(self,lang="en",period="",start="",end="",encode="utf-8", numperpage=50):
+    def __init__(self,lang="en",period="",start="",end="",encode="utf-8", numperpage=50, duplicate=False):
         self.__texts = []
         self.__links = []
         self.__results = []
@@ -85,6 +87,7 @@ class GoogleNews:
         self.__encode = encode
         self.__numperpage = numperpage
         self.__failflag = 0
+        self.__duplicate = duplicate
 
     def set_lang(self, lang):
         self.__lang = lang
@@ -137,10 +140,11 @@ class GoogleNews:
         try:
             if self.__start != "" and self.__end != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&rlz=1C5CHFA_enUS916US916&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
             elif self.__period != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},qdr:{},,sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__period,(self.__numperpage * (page - 1)),self.__numperpage) 
             else:
-                self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,(self.__numperpage * (page - 1)), self.__numperpage) 
+                self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,(self.__numperpage * (page - 1)), self.__numperpage)     
         except AttributeError:
             raise AttributeError("You need to run a search() before using get_page().")
         try:
@@ -172,10 +176,19 @@ class GoogleNews:
                 #    tmp_img = item.findAll("g-img")[0].find("img").get("src")
                 #except Exception:
                 #    tmp_img = ''
+                if define_date(tmp_date).date() > datetime.datetime.strptime(self.__end, "%m/%d/%Y").date():
+                    continue
+                if define_date(tmp_date).date() < datetime.datetime.strptime(self.__start, "%m/%d/%Y").date():
+                    continue  
+
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                if self.__duplicate:
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date)+datetime.timedelta(hours=8),'desc': tmp_desc, 'link': tmp_link})
+                else:
+                    results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
@@ -194,6 +207,7 @@ class GoogleNews:
         try:
             if self.__start != "" and self.__end != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{},sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
+                #self.url = "https://www.google.com/search?q={}&lr=lang_{}&rlz=1C5CHFA_enUS916US916&tbs=lr:lang_1{},cdr:1,cd_min:{},cd_max:{}&tbm=nws&ei=2CuPYPmKNo2P9PwPvYSqsAs&start={}&sa=N&ved=0ahUKEwj51rj2iazwAhWNB50JHT2CCrY4ZBDy0wMIwQM&biw=1761&bih=946&dpr=2&num={}".format(self.__key,self.__lang,self.__lang,self.__start,self.__end,(self.__numperpage * (page - 1)), self.__numperpage)
             elif self.__period != "":
                 self.url = "https://www.google.com/search?q={}&lr=lang_{}&biw=1920&bih=976&source=lnt&&tbs=lr:lang_1{},qdr:{},,sbd:1&tbm=nws&start={}&num={}".format(self.__key,self.__lang,self.__lang,self.__period,(self.__numperpage * (page - 1)),self.__numperpage) 
             else:
@@ -229,10 +243,19 @@ class GoogleNews:
                 #    tmp_img = item.findAll("g-img")[0].find("img").get("src")
                 #except Exception:
                 #    tmp_img = ''
+                if define_date(tmp_date).date() > datetime.datetime.strptime(self.__end, "%m/%d/%Y").date():
+                    continue
+                if define_date(tmp_date).date() < datetime.datetime.strptime(self.__start, "%m/%d/%Y").date():
+                    continue                
                 self.__texts.append(tmp_text)
                 self.__links.append(tmp_link)
                 #self.__results.append({'title': tmp_text, 'media': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link,'img': tmp_img})
-                self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                
+                if self.__duplicate:
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date)+datetime.timedelta(hours=8),'desc': tmp_desc, 'link': tmp_link})
+                else:
+                    self.__results.append({'title': tmp_text, 'source': tmp_media,'date': tmp_date,'datetime':define_date(tmp_date),'desc': tmp_desc, 'link': tmp_link})
             self.response.close()
         except Exception as e_parser:
             print(e_parser)
