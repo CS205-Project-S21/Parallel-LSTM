@@ -127,12 +127,12 @@ def main():
         x_normalized = ((x - np.min(x)) / (np.max(x) - np.min(x))).tolist()
         return x_normalized
 
-    df6 = df6.withColumn('StockPrice', normalize(df6['StockPrice']))
+    
 
     # Kick out rows with less than num_datapoints data points
     df6 = df6.withColumn('array_length', f.size("StockPrice"))
     df6 = df6.filter((df6.array_length == num_datapoints)).select(['window', 'StockPrice'])
-
+    df6 = df6.withColumn('StockPrice', normalize(df6['StockPrice']))
     # df6 looks like:
     # +--------------------+--------------------+
     # |              window|          StockPrice|
