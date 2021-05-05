@@ -10,9 +10,9 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 ├── LSTM_DP_altered.py
 ├── README.md
 ├── data
-│   ├── news
+│   ├── news_Cryptocurrency
 │   │   ├── data
-│   │   │   ├── GoogleNews_Bitcoin_small.csv
+│   │   │   ├── GoogleNews_Bitcoin_large.csv: the google news that contain 'Bitcoin'
 │   │   │   ├── news_large.csv
 │   │   │   ├── news_small.csv
 │   │   │   └── profile_test.csv
@@ -22,7 +22,7 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 │   │       └── news_sentiment_analysis.py
 │   ├── news_Energy
 │   │   ├── data
-│   │   │   └── news_large.csv
+│   │   │   └── GoogleNews_Energy_large.csv: the google news that contain 'oil' and 'gas'
 │   │   └── python_files
 │   │       ├── GetNews.ipynb
 │   │       ├── download_news.py
@@ -63,13 +63,15 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 │           ├── tweet_processing.py
 │           ├── twitter_client.py
 │           └── visualize.py
-├── playground
+├── playground: draft codes to fetch and preprocess data
 │   ├── BingNewsAPI.ipynb
 │   ├── CombineSentimentStock.ipynb
 │   ├── ContextualWebSeachAPI.ipynb
 │   ├── DL_Clean_from_3Sources.ipynb
 │   ├── DataPipline_test.ipynb
 │   ├── GetGoogleNews.ipynb
+│   ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
+│   ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
 │   ├── GetNews.ipynb
 │   ├── GoogleNewsPackage.ipynb
 │   ├── ModifyGoogleNews.ipynb
@@ -77,12 +79,16 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 │   ├── NewsAPI_Notes.md
 │   └── NewsCatcher.ipynb
 ├── requirements.txt
-└── utils
+└── utils: utilities to fetch data
     ├── __pycache__
     │   └── fetchgooglenews.cpython-38.pyc
     └── fetchgooglenews.py
 ```
 
+│   │   │   ├── GoogleNews_Bitcoin_large.csv: the google news that contain 'Bitcoin'
+│   │   │   └── GoogleNews_Energy_large.csv: the google news that contain 'oil' and 'gas'
+│   ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
+│   ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
 ## 2. Instructions for running
 ## 2. Preprocessing of Data
 ### 2.1 Raw Data
