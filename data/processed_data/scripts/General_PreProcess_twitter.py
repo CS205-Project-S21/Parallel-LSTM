@@ -83,7 +83,11 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
     df_filled_temp = df_filled.withColumn('if_open', f.when(f.col('Type') == 'Open', 1).otherwise(0))
     df_filled2 = df_filled_temp.withColumn('Price_interpol',
                                            f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price')) \
-                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast("long") - 43200) * (f.col('TrueDate').cast("long") - f.col('readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col('readvalue_ff')))
+                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (
+                                                       f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast(
+                                                   "long") - 43200) * (f.col('TrueDate').cast("long") - f.col(
+                                               'readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col(
+                                               'readvalue_ff')))
     df4 = df_filled2.select('TrueDate', 'Type', 'Price_interpol')
 
     # df4 looks like:
@@ -202,17 +206,80 @@ def preprocess_news(news_path, spark, startdate, enddate):
     df5 = df5.filter((df5.array_length == num_datapoints)).select(['window', 'NewsScore'])
     return df5
 
+##########################################  3. For twitter analysis ###################################################
+def preprocess_twitter(twitter_path, spark, startdate, enddate):
 
-##########################################  4. Combine all price and sentiment analysis ###################################################
+    window_duration = '11 day'
+    slide_duration = '1 day'
+    num_datapoints = 22
+
+    df = spark.read.csv(twitter_path, header=True, escape='"')
+    df = df.withColumn('time', f.to_timestamp(df['created_at'], 'yyyy-MM-dd HH:mm:ss'))
+    df = df.withColumn('hour', f.hour(f.col('time')))
+    df = df.withColumn('Day', f.to_date(df['time'], format='yyyy-MM-dd'))
+
+    df1 = df.select('Day', 'hour', 'text')
+    df1 = df1.withColumn('TrueDate', when(df1.hour < 9, df1['Day'])
+                         .when(df1.hour >= 16, f.date_add(df1['Day'], 1))
+                         .otherwise(df1['Day']))
+    df1 = df1.withColumn('Type', when(df1.hour < 9, 'Open')
+                         .when(df1.hour >= 16, 'Open')
+                         .otherwise('Close'))
+
+    # calculate sentiment scores for title, description and content
+    analyzer = SentimentIntensityAnalyzer()
+
+    @f.udf(returnType=DoubleType())
+    def calculate_sentiment_score(text):
+        score = analyzer.polarity_scores(text)['compound']
+        return score
+
+    df2 = df1.withColumn('score', calculate_sentiment_score(df1['text']))
+    df2 = df2.groupBy(['TrueDate', 'Type']).agg(f.avg("score").alias("AverageScore"))
+
+    # Fill the missing row with help of a full dateframe
+    full_dict = {'TrueDate': [], 'Type': []}
+    cdate = startdate
+    while cdate <= enddate:
+        full_dict['TrueDate'].extend([cdate, cdate])
+        full_dict['Type'].extend(['Open', 'Close'])
+        cdate += datetime.timedelta(days=1)
+    df_ref_pd = pd.DataFrame(full_dict)
+    df_ref = spark.createDataFrame(df_ref_pd)
+    df3 = df_ref.join(df2, on=['TrueDate', 'Type'], how='left_outer')
+    df3 = df3.na.fill(value=0, subset=["AverageScore"])
+
+    # use the following to combine open and close into an array
+    w = Window.partitionBy('TrueDate').orderBy(f.desc('Type'))
+    df4 = df3.withColumn(
+        'Open_Close', f.collect_list('AverageScore').over(w)
+    ) \
+        .groupBy('TrueDate').agg(f.max('Open_Close').alias('Open_Close'))
+
+    # Create a time window, and collect to form a larger array
+    df5 = df4.orderBy("TrueDate").groupBy(f.window('TrueDate', window_duration, slide_duration)) \
+        .agg(f.collect_list('Open_Close')) \
+        .withColumnRenamed('collect_list(Open_Close)', 'TwitterScore')
+    df5 = df5.withColumn('TwitterScore', f.flatten(df5['TwitterScore'])).sort("window")
+
+    # Kick out rows with less than num_datapoints data points
+    df5 = df5.withColumn('array_length', f.size("TwitterScore"))
+    df5 = df5.filter((df5.array_length == num_datapoints)).select(['window', 'TwitterScore'])
+    return df5
+
+
+##########################################  5. Combine all price, sentiment analysis and twitter ###################################################
+
 def main():
     stockprice_rawdata_path_COG = '../../stock_price/data/energy/price_COG.csv'
     stockprice_rawdata_path_DVN = '../../stock_price/data/energy/price_DVN.csv'
     stockprice_rawdata_path_HFC = '../../stock_price/data/energy/price_HFC.csv'
     stockprice_rawdata_path_IXIC = '../../stock_price/data/energy/price_IXIC.csv'
     news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_large_all.csv'
+    twitter_path = '../../twitter/data/historical/energy/tweets.csv'
     spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
-    sdate = datetime.date(2016, 3, 31)
+    sdate = datetime.date(2021, 1, 16)
     edate = datetime.date(2021, 4, 16)
 
     df_COG = preprocess_price('COG', stockprice_rawdata_path_COG, spark, sdate, edate)
@@ -220,13 +287,14 @@ def main():
     df_HFC = preprocess_price('HFC', stockprice_rawdata_path_HFC, spark, sdate, edate)
     df_IXIC = preprocess_price('IXIC', stockprice_rawdata_path_IXIC, spark, sdate, edate)
     df_news = preprocess_news(news_rawdata_path, spark, sdate, edate)
+    df_twitter = preprocess_twitter(twitter_path, spark, sdate, edate)
 
     df1 = df_DVN.join(df_HFC, on=['window'], how='left_outer')
     df2 = df_COG.join(df1, on=['window'], how='left_outer')
     df3 = df_IXIC.join(df2, on=['window'], how='left_outer')
-    df_final = df_news.join(df3, on=['window'], how='left_outer')
-
-    df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
+    df4 = df_news.join(df3, on=['window'], how='left_outer')
+    df_final = df_twitter.join(df4, on=['window'], how='left_outer')
+    df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy_short.csv', index=False)
 
 if __name__ == '__main__':
     main()
