@@ -83,7 +83,11 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
     df_filled_temp = df_filled.withColumn('if_open', f.when(f.col('Type') == 'Open', 1).otherwise(0))
     df_filled2 = df_filled_temp.withColumn('Price_interpol',
                                            f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price')) \
-                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast("long") - 43200) * (f.col('TrueDate').cast("long") - f.col('readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col('readvalue_ff')))
+                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (
+                                                       f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast(
+                                                   "long") - 43200) * (f.col('TrueDate').cast("long") - f.col(
+                                               'readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col(
+                                               'readvalue_ff')))
     df4 = df_filled2.select('TrueDate', 'Type', 'Price_interpol')
 
     # df4 looks like:
@@ -115,11 +119,14 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
         Normalize the input to the range between 0 and 1
         """
         x = np.array(x)
-        x_normalized = ((x - np.min(x)) / (np.max(x) - np.min(x))).tolist()
+        x_min = np.min(x)
+        x_max = np.max(x)
+        x_normalized = ((x - x_min) / (x_max - x_min)).tolist()
+        # append the min and max price in the time window for de-normalization
+        x_normalized.extend([float(x_min), float(x_max)])
         return x_normalized
 
-        # Kick out rows with less than num_datapoints data points
-
+    # kick out rows with less than num_datapoints data points
     df6 = df6.withColumn('array_length', f.size("StockPrice"))
     df6 = df6.filter((df6.array_length == num_datapoints)).select(['window', 'StockPrice'])
     df6 = df6.withColumn('StockPrice', normalize(df6['StockPrice']))
@@ -205,6 +212,29 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
 ##########################################  4. Combine all price and sentiment analysis ###################################################
 def main():
+    # stockprice_rawdata_path_BTC = '../../stock_price/data/cryptocurrency/price_BTC.csv'
+    # stockprice_rawdata_path_MARA = '../../stock_price/data/cryptocurrency/price_MARA.csv'
+    # stockprice_rawdata_path_RIOT = '../../stock_price/data/cryptocurrency/price_RIOT.csv'
+    # stockprice_rawdata_path_IXIC = '../../stock_price/data/cryptocurrency/price_IXIC.csv'
+    # news_rawdata_path = '../../news/data/cryptocurrency/GoogleNews_Bitcoin_large_all.csv'
+    # spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
+    #
+    # sdate = datetime.date(2016, 3, 31)
+    # edate = datetime.date(2021, 4, 16)
+    #
+    # df_BTC = preprocess_price('BTC', stockprice_rawdata_path_BTC, spark, sdate, edate)
+    # df_MARA = preprocess_price('MARA', stockprice_rawdata_path_MARA, spark, sdate, edate)
+    # df_RIOT = preprocess_price('RIOT', stockprice_rawdata_path_RIOT, spark, sdate, edate)
+    # df_IXIC = preprocess_price('IXIC', stockprice_rawdata_path_IXIC, spark, sdate, edate)
+    # df_news = preprocess_news(news_rawdata_path, spark, sdate, edate)
+    #
+    # df1 = df_MARA.join(df_RIOT, on=['window'], how='left_outer')
+    # df2 = df_BTC.join(df1, on=['window'], how='left_outer')
+    # df3 = df_IXIC.join(df2, on=['window'], how='left_outer')
+    # df_final = df_news.join(df3, on=['window'], how='left_outer')
+    #
+    # df_final.orderBy('window').toPandas().to_csv('../data/processed_data_cryptocurrency.csv', index=False)
+
     stockprice_rawdata_path_COG = '../../stock_price/data/energy/price_COG.csv'
     stockprice_rawdata_path_DVN = '../../stock_price/data/energy/price_DVN.csv'
     stockprice_rawdata_path_HFC = '../../stock_price/data/energy/price_HFC.csv'
@@ -227,6 +257,7 @@ def main():
     df_final = df_news.join(df3, on=['window'], how='left_outer')
 
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
+
 
 if __name__ == '__main__':
     main()
