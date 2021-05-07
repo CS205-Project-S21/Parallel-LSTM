@@ -83,7 +83,11 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
     df_filled_temp = df_filled.withColumn('if_open', f.when(f.col('Type') == 'Open', 1).otherwise(0))
     df_filled2 = df_filled_temp.withColumn('Price_interpol',
                                            f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price')) \
-                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast("long") - 43200) * (f.col('TrueDate').cast("long") - f.col('readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col('readvalue_ff')))
+                                           .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (
+                                                       f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast(
+                                                   "long") - 43200) * (f.col('TrueDate').cast("long") - f.col(
+                                               'readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col(
+                                               'readvalue_ff')))
     df4 = df_filled2.select('TrueDate', 'Type', 'Price_interpol')
 
     # df4 looks like:
@@ -253,6 +257,7 @@ def main():
     df_final = df_news.join(df3, on=['window'], how='left_outer')
 
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
+
 
 if __name__ == '__main__':
     main()

@@ -84,8 +84,8 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
     df_filled2 = df_filled_temp.withColumn('Price_interpol',
                                            f.when(f.col('readtime_bf') == f.col('readtime_ff'), f.col('Price')) \
                                            .otherwise((f.col('readvalue_bf') - f.col('readvalue_ff')) / (
-                                                       f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast(
-                                                   "long") - 43200) * (f.col('TrueDate').cast("long") - f.col(
+                                                   f.col('readtime_bf').cast("long") - f.col('readtime_ff').cast(
+                                               "long") - 43200) * (f.col('TrueDate').cast("long") - f.col(
                                                'readtime_ff').cast("long") - 43200 * f.col('if_open')) + f.col(
                                                'readvalue_ff')))
     df4 = df_filled2.select('TrueDate', 'Type', 'Price_interpol')
@@ -209,9 +209,9 @@ def preprocess_news(news_path, spark, startdate, enddate):
     df5 = df5.filter((df5.array_length == num_datapoints)).select(['window', 'NewsScore'])
     return df5
 
+
 ##########################################  3. For twitter analysis ###################################################
 def preprocess_twitter(twitter_path, spark, startdate, enddate):
-
     window_duration = '11 day'
     slide_duration = '1 day'
     num_datapoints = 22
@@ -324,6 +324,7 @@ def main():
     df4 = df_news.join(df3, on=['window'], how='left_outer')
     df_final = df_twitter.join(df4, on=['window'], how='left_outer')
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy_short.csv', index=False)
+
 
 if __name__ == '__main__':
     main()
