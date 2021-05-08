@@ -15,7 +15,7 @@ conf = SparkConf().setMaster('local[2]').setAppName("TwitterStreamApp")
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 # creat the Streaming Context from the above spark context with window size n seconds
-ssc = StreamingContext(sc, 60)
+ssc = StreamingContext(sc, 300)
 # # setting a checkpoint to allow RDD recovery
 # ssc.checkpoint("checkpoint_TwitterApp")
 # read data from port 9009
