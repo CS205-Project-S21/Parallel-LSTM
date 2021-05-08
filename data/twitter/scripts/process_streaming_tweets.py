@@ -10,8 +10,7 @@ category = 'cryptocurrency'
 # category = 'test_for_fun'
 
 # create spark configuration
-conf = SparkConf()
-conf.setAppName("TwitterStreamApp")
+conf = SparkConf().setMaster('local[2]').setAppName("TwitterStreamApp")
 # create spark instance with the above configuration
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
