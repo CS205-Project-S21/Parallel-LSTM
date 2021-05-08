@@ -17,7 +17,6 @@ from fetchgooglenews import GoogleNews
 from fetchcontextweb import fetch_context_web
 
 
-
 def generate_periods(startdate, enddate, length=30, shift=-1):
     '''
     Generate time windows from startdate to enddate with fixed day length, for piecewise news downloading
@@ -66,6 +65,7 @@ def generate_periods(startdate, enddate, length=30, shift=-1):
         rightdate_str = datetime.date.strftime(rightdate, "%m/%d/%Y")
         output_dates.append((leftdate_str, rightdate_str))
     return output_dates
+
 
 def get_Googlenews(keywords, time_periods, outname=None, MAX_PAGE=5, duplicate=True, pause=1):
     '''
@@ -131,6 +131,7 @@ def get_Googlenews(keywords, time_periods, outname=None, MAX_PAGE=5, duplicate=T
                 print("Reach 10 requests capacity, will sleep for 2000s.")
             if T<len(time_periods)-1: time.sleep(2000)
     return pd.DataFrame(results_all)
+
 
 def get_cw_news(keywords, time_periods, MAX_PAGE=5):
     '''
@@ -210,9 +211,12 @@ def get_news(keywords, startdate, enddate, length=10, mode="ContextWeb"):
     else:
         raise ValueError("Mode Only Supports 'ContextWeb' or 'Google'.")
     
-    df = df[df.datetime < enddate+datetime.timedelta(days=1)].copy()
-    df.drop_duplicates(inplace=True)
-
+    if len(df) == 0:
+        print("Found No articles, maybe because you use Google Mode for too latest news, try ContextWeb Mode instead.")
+    else:
+        df = df[df.datetime < enddate+datetime.timedelta(days=1)].copy()
+        df.drop_duplicates(inplace=True)
+    
     return df
 
 
