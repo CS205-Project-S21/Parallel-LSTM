@@ -3,4 +3,5 @@
 .idea
 data/twitter/data/historical/cryptocurrency/raw/
 data/twitter/data/historical/energy/raw/
+data/correlation_analysis/
 __pycache__/

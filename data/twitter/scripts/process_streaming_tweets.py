@@ -16,7 +16,7 @@ conf.setAppName("TwitterStreamApp")
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 # creat the Streaming Context from the above spark context with window size n seconds
-ssc = StreamingContext(sc, 30)
+ssc = StreamingContext(sc, 3)
 # # setting a checkpoint to allow RDD recovery
 # ssc.checkpoint("checkpoint_TwitterApp")
 # read data from port 9009
@@ -26,8 +26,7 @@ dataStream = ssc.socketTextStream("localhost", 9009)
 analyzer = SentimentIntensityAnalyzer()
 
 scores = dataStream.map(lambda text: (analyzer.polarity_scores(text)['compound'], 1))
-avg_score = scores.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1])).map(lambda z: z[0] / z[1])
-
+avg_score = scores.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1])).map(lambda z: (z[0] / z[1], z[1]))
 
 def save(rdd):
     with open("../data/streaming/twitter_sentiment_scores_" + category + ".txt", 'a', encoding='utf-8') as f:

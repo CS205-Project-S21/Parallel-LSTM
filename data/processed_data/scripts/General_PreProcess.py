@@ -11,14 +11,15 @@ import numpy as np
 import pandas as pd
 import sys
 
+# define global variables
+window_duration = '15 day'
+slide_duration = '1 day'
+num_datapoints = 30
+
 
 ##########################################  1. For StockPrice Data ###################################################
 
 def preprocess_price(price_name, price_path, spark, startdate, enddate):
-    window_duration = '11 day'
-    slide_duration = '1 day'
-    num_datapoints = 22
-
     # read csv
     df = spark.read.csv(price_path, header=True)
     # copy date to create a new time check colume
@@ -146,10 +147,6 @@ def preprocess_price(price_name, price_path, spark, startdate, enddate):
 
 ##########################################  2. For sentiment analysis ###################################################
 def preprocess_news(news_path, spark, startdate, enddate):
-    window_duration = '11 day'
-    slide_duration = '1 day'
-    num_datapoints = 22
-
     df = spark.read.csv(news_path, header=True, escape='"')
     df = df.withColumn('time', f.to_timestamp(df['datetime'], 'yyyy-MM-dd HH:mm:ss'))
     df = df.withColumn('hour', f.hour(f.col('time')))
