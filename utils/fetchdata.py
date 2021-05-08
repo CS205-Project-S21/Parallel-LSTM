@@ -134,7 +134,7 @@ def get_Googlenews(keywords, time_periods, outname=None, MAX_PAGE=5, duplicate=T
     return pd.DataFrame(results_all)
 
 
-def get_cw_news(keywords, time_periods, MAX_PAGE=5):
+def get_cw_news(keywords, time_periods, MAX_PAGE=5, duplicate=True):
     '''
     Download news by context web search API with specified keywords and time windows
     With accurate timestamp
@@ -152,6 +152,10 @@ def get_cw_news(keywords, time_periods, MAX_PAGE=5):
         Maximum page number when fetching google news search results. I set the scrapping tool to get 50 articles per page. 
         It will automatically stop when reaches the last page of google results no matter how large is your MAX_PAGE.
     
+    duplicate: False or True, default True
+        This is a specific parameter for our stock price app. We need news for open and close time at each day, but the articles from google
+        news only have date without hour time. So we decide to duplicate the articles and set 1 at 4am (for open) and another at 12pm (for close).
+    
     Returns
     -------
     A Pandas dataframe of all fetched news, with column ['title', 'source', 'date', 'datetime', 'desc', 'link']
@@ -167,7 +171,7 @@ def get_cw_news(keywords, time_periods, MAX_PAGE=5):
     for leftdate, rightdate in time_periods:
         results_period = []
         for i in range(1, MAX_PAGE + 1):
-            tmp_results, fail_flag = fetch_context_web(keywords, leftdate, rightdate, page=i)
+            tmp_results, fail_flag = fetch_context_web(keywords, leftdate, rightdate, page=i, duplicate=duplicate)
             results_period.extend(tmp_results)
             if fail_flag == 1:
                 break
