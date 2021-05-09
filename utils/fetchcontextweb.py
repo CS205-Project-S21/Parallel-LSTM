@@ -33,17 +33,21 @@ def fetch_context_web(keywords, startdate, enddate, page=1, duplicate=True):
             fail_flag = 1
 
         for i, article in enumerate(articles1):
+            pass_flag = 0
             tmp_title = article['title']
             tmp_source = article['provider']['name']
             for date_format in date_formats:
                 try:
                     tmp_datetime = datetime.datetime.strptime(article['datePublished'], date_format).date()
                     tmp_date = tmp_datetime.strftime("%b %d, %Y")
+                    pass_flag = 1
                     break
                 except:
                     continue
             tmp_desc = re.sub(r'(\r|\n|<.*?>|…)+', ' ', article['description'] + ' ' + re.sub(r'(\r|\n|<.*?>|… \[\+[0-9]+ chars])+', ' ', article['body']).strip()).strip()
             tmp_link = article['url']
+            if pass_flag == 0:
+                continue
             if duplicate:
                 AM_time = datetime.datetime(tmp_datetime.year, tmp_datetime.month,tmp_datetime.day,4,0)
                 PM_time = datetime.datetime(tmp_datetime.year, tmp_datetime.month,tmp_datetime.day,12,0)
