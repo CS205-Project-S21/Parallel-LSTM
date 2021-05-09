@@ -158,10 +158,10 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
     @f.udf
     def connect_string(a, b):
-        if not a:
-            a = ''
-        if not b:
-            b = ''
+        if a == None:
+            return b
+        if b == None:
+            return a
         return a + ' ' + b
 
     df = df.withColumn('AllText', connect_string(df['title'], df['desc']))
@@ -246,7 +246,7 @@ def main():
     stockprice_rawdata_path_HFC = '../../stock_price/data/energy/price_HFC.csv'
     stockprice_rawdata_path_IXIC = '../../stock_price/data/energy/price_IXIC.csv'
     news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_Mega_all.csv'
-    spark = SparkSession.builder.master('local[6]').appName('GeneralDataProcess').getOrCreate()
+    spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
     sdate = datetime.date(2016, 3, 31)
     edate = datetime.date(2021, 4, 16)
