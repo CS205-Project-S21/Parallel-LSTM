@@ -137,6 +137,7 @@ def main():
 
     if os.path.exists('../model_saved/' + industry + '_' + stock + '_2009_1.h5'):
         os.remove('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
+        model.save('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
     else:
         # print("The saved model does not exist")
         model.save('../model_saved/' + industry + '_' + stock + '_2009_1.h5')

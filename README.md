@@ -7,7 +7,11 @@ This is a Big Data and Big Compute project to predict stock prices, and analyze 
 There are many published models to predict stock prices, but the data processing and model training on time-series data take long time. Big Data and Big Compute are good methods to solve these issues. In this project, We predict future stock prices based on previous stock prices and google news by LSTM models, and improve the runtime performance by parallel computing techniques, e.g. spark, hadoop, loop unrolling, and etc.  
 ## 2. Workflow
 ![](./docs/pictures/workflow.png)
-## 2. Directory structure
+The workflow figure is described as below.
+- Our data are composed of 2 parts, Google News and Yahoo Finance Historical Market Data. We fetched these data by the get_news() and get_stock_price() functions in fetch_data.py. 
+- Then we process the raw data by general_preprocess.py. 
+- Finally we train the LSTM models based on the processed data on SLURM. 
+## 3. Directory structure
 
 ```
 ├.
@@ -89,8 +93,8 @@ There are many published models to predict stock prices, but the data processing
 │   ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
 │   ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
 ```
-## 2. Instructions for running
-## 2. Preprocessing of Data
+## 4. Instructions for running
+## 5. Preprocessing of Data
 ### 2.1 Raw Data
 ### 2.2 Proprecessed Data
 ## 3. LSTM models
