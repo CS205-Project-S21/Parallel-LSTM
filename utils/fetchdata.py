@@ -263,7 +263,7 @@ def get_stock_price(ticker, startdate, enddate):
     df_date['key1'] = 1
     df_ticker = df[['ticker']].copy()
     df_ticker['key1'] = 1
-    df_type = pd.DataFrame([['Open'], ['Closed']], columns=['Type'])
+    df_type = pd.DataFrame([['Open'], ['Close']], columns=['Type'])
     df_type['key2'] = 1
     df_merge = df_date.merge(df_type, left_on='key1', right_on='key2')
     df_merge = df_merge.drop(columns=['key1', 'key2'])
