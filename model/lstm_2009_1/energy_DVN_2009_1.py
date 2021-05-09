@@ -75,7 +75,7 @@ def main():
             prices = str2num(row)
             senti = str2num(df_senti[i])
             one_row = []
-            for i, p in enumerate(prices[:-3]):
+            for i, p in enumerate(prices[:21]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
             y.append(prices[-3])
