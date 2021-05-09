@@ -10,7 +10,7 @@ from https://github.com/Xinyi6/DP-LSTM-Differential-Privacy-inspired-LSTM-for-St
 ### Where we cannot use big compute:
 - The training of LSTM
 '''
-
+import os
 import numpy as np
 import pandas as pd
 #import datetime as dt
@@ -36,17 +36,17 @@ from sklearn.metrics import mean_squared_error
 
 #import matplotlib.pyplot as plt
 
-stock = 'BTC'
-industry = 'cryptocurrency'
+stock = 'HFC'
+industry = 'energy'
 
 def main():
     # read data
-    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.txt')
+    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '_mega_15.csv')
     
     # ratio of train and test data 0.8:0.2
-    data = data.iloc[:-1]
+    # data = data.iloc[:-1]
     # ratio of train and test data 0.8:0.2
-    train_len = int(len(data)*0.8)
+    train_len = int(len(data)*0.9)
     test_len = len(data) - train_len
     
     # process data
@@ -71,14 +71,14 @@ def main():
         min_max = []
         for i, row in enumerate(df_prices):
             if type(row) == float:
-                print(row)
+                continue
             prices = str2num(row)
             senti = str2num(df_senti[i])
             one_row = []
             for i, p in enumerate(prices[:-3]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
-            y.append(prices[-3])
+            y.append(prices[21])
             min_max.append(prices[-2:])
         x = np.array(x)
         y = np.array(y)
@@ -88,15 +88,12 @@ def main():
     x_test, y_test, min_max_test = input_data(df_prices_test, df_senti_test)
     
     # model parameters setting
-    split = 0.85 # train_data percent
-    sequence_length=21;  # is the window length of a subset
     normalise= True  # normalize 3 features
     batch_size=64;
-    input_dim=2  # ['price','sentiment']
-    input_timesteps=21 # the window length of a training data set
+    input_dim=x_train.shape[2]  # ['price','sentiment']
+    input_timesteps=x_train.shape[1] # the window length of a training data set
     neurons=10  # number of neurons in one LSTM layer
     epochs=50
-    prediction_len=1  # predict one day's price
     dense_output=1  # output size of the last dense layer
     drop_out=0.1  # dropout rate
     
@@ -137,6 +134,12 @@ def main():
     print('Industry: ', industry, '; stock: ', stock.upper())
     print('The max price is {0}, the min price is {1}'.format(max_price, min_price))
     print('The RMSE of predictions is', np.sqrt(mean_squared_error(pred_denorm, ytest_denorm)))
+
+    if os.path.exists('../model_saved/' + industry + '_' + stock + '_2009_1.h5'):
+        os.remove('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
+    else:
+        # print("The saved model does not exist")
+        model.save('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
     #plt.plot(y_test, label = 'true')
     #plt.plot(prediction_seqs, label = 'pred')
     #plt.xlabel('days')

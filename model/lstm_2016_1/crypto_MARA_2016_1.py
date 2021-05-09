@@ -22,6 +22,7 @@ from keras.models import Sequential, load_model
 #from sklearn.ensemble import RandomForestRegressor
 #from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error
+import os
 
 #from math import pi,sqrt,exp,pow,log
 #from numpy.linalg import det, inv
@@ -38,10 +39,12 @@ from sklearn.metrics import mean_squared_error
 
 stock = 'MARA'
 industry = 'cryptocurrency'
+year = 2016
+prednum = 5
 
 def main():
     # read data
-    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.txt')
+    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.csv')
     
     # ratio of train and test data 0.8:0.2
     data = data.iloc[:-1]
@@ -137,6 +140,11 @@ def main():
     print('Industry: ', industry, '; stock: ', stock.upper())
     print('The max price is {0}, the min price is {1}'.format(max_price, min_price))
     print('The RMSE of predictions is', np.sqrt(mean_squared_error(pred_denorm, ytest_denorm)))
+    if os.path.exists('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5'):
+        os.remove('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
+    else:
+        # print("The saved model does not exist")
+        model.save('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
     #plt.plot(y_test, label = 'true')
     #plt.plot(prediction_seqs, label = 'pred')
     #plt.xlabel('days')

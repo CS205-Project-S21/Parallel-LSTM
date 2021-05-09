@@ -22,6 +22,7 @@ from keras.models import Sequential, load_model
 #from sklearn.ensemble import RandomForestRegressor
 #from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error
+import os
 
 #from math import pi,sqrt,exp,pow,log
 #from numpy.linalg import det, inv
@@ -36,15 +37,17 @@ from sklearn.metrics import mean_squared_error
 
 #import matplotlib.pyplot as plt
 
-stock = 'HFC'
+stock = 'COG'
 industry = 'energy'
+year = 2016
+prednum = 5
 
 def main():
     # read data
-    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.txt')
+    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '_mega_15.csv')
     
     # ratio of train and test data 0.8:0.2
-    data = data.iloc[:-1]
+    # data = data.iloc[:-1]
     # ratio of train and test data 0.8:0.2
     train_len = int(len(data)*0.8)
     test_len = len(data) - train_len
@@ -71,7 +74,7 @@ def main():
         min_max = []
         for i, row in enumerate(df_prices):
             if type(row) == float:
-                print(row)
+                continue
             prices = str2num(row)
             senti = str2num(df_senti[i])
             one_row = []
@@ -88,16 +91,16 @@ def main():
     x_test, y_test, min_max_test = input_data(df_prices_test, df_senti_test)
     
     # model parameters setting
+    n = 9
     split = 0.85 # train_data percent
-    sequence_length=21;  # is the window length of a subset
     normalise= True  # normalize 3 features
     batch_size=64;
-    input_dim=2  # ['price','sentiment']
-    input_timesteps=21 # the window length of a training data set
+    input_dim=x_train.shape[2]  # ['price','sentiment']
+    input_timesteps=x_train.shape[1] # the window length of a training data set
     neurons=10  # number of neurons in one LSTM layer
-    epochs=50
+    epochs=200
     prediction_len=1  # predict one day's price
-    dense_output=1  # output size of the last dense layer
+    dense_output=n  # output size of the last dense layer
     drop_out=0.1  # dropout rate
     
     # Build LSTM MODEL

@@ -10,7 +10,7 @@ from https://github.com/Xinyi6/DP-LSTM-Differential-Privacy-inspired-LSTM-for-St
 ### Where we cannot use big compute:
 - The training of LSTM
 '''
-
+import os
 import numpy as np
 import pandas as pd
 #import datetime as dt
@@ -36,12 +36,14 @@ from sklearn.metrics import mean_squared_error
 
 #import matplotlib.pyplot as plt
 
-stock = 'DVN'
+stock = 'HFC'
 industry = 'energy'
+year = 2016
+prednum = 5
 
 def main():
     # read data
-    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.txt')
+    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.csv')
     
     # ratio of train and test data 0.8:0.2
     data = data.iloc[:-1]
@@ -137,6 +139,11 @@ def main():
     print('Industry: ', industry, '; stock: ', stock.upper())
     print('The max price is {0}, the min price is {1}'.format(max_price, min_price))
     print('The RMSE of predictions is', np.sqrt(mean_squared_error(pred_denorm, ytest_denorm)))
+    if os.path.exists('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5'):
+        os.remove('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
+    else:
+        # print("The saved model does not exist")
+        model.save('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
     #plt.plot(y_test, label = 'true')
     #plt.plot(prediction_seqs, label = 'pred')
     #plt.xlabel('days')
