@@ -93,10 +93,10 @@ def main():
     sequence_length=21;  # is the window length of a subset
     normalise= True  # normalize 3 features
     batch_size=64;
-    input_dim=2  # ['price','sentiment']
+    input_dim=x_test.shape[2]  # ['price','sentiment']
     input_timesteps=21 # the window length of a training data set
     neurons=10  # number of neurons in one LSTM layer
-    epochs=20
+    epochs=100
     prediction_len=1  # predict one day's price
     dense_output=1  # output size of the last dense layer
     drop_out=0.1  # dropout rate
