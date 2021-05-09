@@ -13,8 +13,8 @@ import time
 import pandas as pd
 import yfinance as yf
 import numpy as np
-from fetchgooglenews import GoogleNews
-from fetchcontextweb import fetch_context_web
+from fetch_google_news import GoogleNews
+from fetch_context_web import fetch_context_web
 
 
 def generate_periods(startdate, enddate, length=30, shift=-1):
@@ -52,14 +52,14 @@ def generate_periods(startdate, enddate, length=30, shift=-1):
     [('01/01/2010', '01/11/2010'), ('01/11/2010', '01/21/2010'), ('01/21/2010', '01/31/2010'), ('01/31/2010', '02/05/2010')]
     '''
     totaldays = (enddate - startdate).days + 1
-    num_periods = math.ceil(totaldays/length)
+    num_periods = math.ceil(totaldays / length)
     output_dates = []
     for i in range(0, num_periods):
-        if i < num_periods-1:
-            leftdate = startdate + datetime.timedelta(days=i*length)
-            rightdate = startdate + datetime.timedelta(days=((i+1)*length+shift))
+        if i < num_periods - 1:
+            leftdate = startdate + datetime.timedelta(days=i * length)
+            rightdate = startdate + datetime.timedelta(days=((i + 1) * length + shift))
         else:
-            leftdate = startdate + datetime.timedelta(days=i*length)
+            leftdate = startdate + datetime.timedelta(days=i * length)
             rightdate = enddate
         leftdate_str = datetime.date.strftime(leftdate, "%m/%d/%Y")
         rightdate_str = datetime.date.strftime(rightdate, "%m/%d/%Y")
@@ -112,9 +112,9 @@ def get_Googlenews(keywords, time_periods, outname=None, MAX_PAGE=5, duplicate=T
     for T, ranges in enumerate(time_periods):
         leftdate, rightdate = ranges
         # Duplicate will copy same article twice, and set one at 4am one at 12pm
-        googlenews = GoogleNews(lang='en', start=leftdate,end=rightdate, numperpage=50, duplicate=duplicate)
+        googlenews = GoogleNews(lang='en', start=leftdate, end=rightdate, numperpage=50, duplicate=duplicate)
         googlenews.search(keywords)
-        for i in range(2,MAX_PAGE+1):
+        for i in range(2, MAX_PAGE + 1):
             time.sleep(1)
             googlenews.get_page(i)
             if googlenews.failflag() == 1:
@@ -126,14 +126,15 @@ def get_Googlenews(keywords, time_periods, outname=None, MAX_PAGE=5, duplicate=T
         if count % 10 == 0:
             if outname:
                 pd.DataFrame(results_all).to_csv(outname, index=False)
-                print("Reach 10 requests capacity, will sleep for 2000s. Up to date batch has been saved in {}".format(outname))
+                print("Reach 10 requests capacity, will sleep for 2000s. Up to date batch has been saved in {}".format(
+                    outname))
             else:
                 print("Reach 10 requests capacity, will sleep for 2000s.")
-            if T<len(time_periods)-1: time.sleep(2000)
+            if T < len(time_periods) - 1: time.sleep(2000)
     return pd.DataFrame(results_all)
 
 
-def get_cw_news(keywords, time_periods, MAX_PAGE=5):
+def get_cw_news(keywords, time_periods, MAX_PAGE=5, duplicate=True):
     '''
     Download news by context web search API with specified keywords and time windows
     With accurate timestamp
@@ -151,6 +152,10 @@ def get_cw_news(keywords, time_periods, MAX_PAGE=5):
         Maximum page number when fetching google news search results. I set the scrapping tool to get 50 articles per page. 
         It will automatically stop when reaches the last page of google results no matter how large is your MAX_PAGE.
     
+    duplicate: False or True, default True
+        This is a specific parameter for our stock price app. We need news for open and close time at each day, but the articles from google
+        news only have date without hour time. So we decide to duplicate the articles and set 1 at 4am (for open) and another at 12pm (for close).
+    
     Returns
     -------
     A Pandas dataframe of all fetched news, with column ['title', 'source', 'date', 'datetime', 'desc', 'link']
@@ -165,14 +170,15 @@ def get_cw_news(keywords, time_periods, MAX_PAGE=5):
     results_all = []
     for leftdate, rightdate in time_periods:
         results_period = []
-        for i in range(1,MAX_PAGE+1):
-            tmp_results, fail_flag = fetch_context_web(keywords, leftdate, rightdate, page=i)
+        for i in range(1, MAX_PAGE + 1):
+            tmp_results, fail_flag = fetch_context_web(keywords, leftdate, rightdate, page=i, duplicate=duplicate)
             results_period.extend(tmp_results)
             if fail_flag == 1:
                 break
         results_all.extend(results_period)
         print("Finish Request from {} to {}, Get {} articles".format(leftdate, rightdate, len(results_period)))
     return pd.DataFrame(results_all)
+
 
 def get_news(keywords, startdate, enddate, length=10, mode="ContextWeb"):
     '''
@@ -203,20 +209,20 @@ def get_news(keywords, startdate, enddate, length=10, mode="ContextWeb"):
     startdate = datetime.datetime.strptime(startdate, "%Y-%m-%d")
     enddate = datetime.datetime.strptime(enddate, "%Y-%m-%d")
     if mode == "ContextWeb":
-        timeperiods = generate_periods(startdate, enddate+datetime.timedelta(days=1), length=length, shift=0)
+        timeperiods = generate_periods(startdate, enddate + datetime.timedelta(days=1), length=length, shift=0)
         df = get_cw_news(keywords, timeperiods, MAX_PAGE=5)
     elif mode == "Google":
         timeperiods = generate_periods(startdate, enddate, length=length, shift=-1)
         df = get_Googlenews(keywords, timeperiods, outname=None, MAX_PAGE=5, duplicate=True, pause=1)
     else:
         raise ValueError("Mode Only Supports 'ContextWeb' or 'Google'.")
-    
+
     if len(df) == 0:
         print("Found No articles, maybe because you use Google Mode for too latest news, try ContextWeb Mode instead.")
     else:
-        df = df[df.datetime < enddate+datetime.timedelta(days=1)].copy()
+        df = df[df.datetime < enddate + datetime.timedelta(days=1)].copy()
         df.drop_duplicates(inplace=True)
-    
+
     return df
 
 
@@ -257,12 +263,14 @@ def get_stock_price(ticker, startdate, enddate):
     df_date['key1'] = 1
     df_ticker = df[['ticker']].copy()
     df_ticker['key1'] = 1
-    df_type = pd.DataFrame([['Open'], ['Closed']], columns=['Type'])
+    df_type = pd.DataFrame([['Open'], ['Close']], columns=['Type'])
     df_type['key2'] = 1
     df_merge = df_date.merge(df_type, left_on='key1', right_on='key2')
     df_merge = df_merge.drop(columns=['key1', 'key2'])
     df_merge2 = df_ticker.merge(df_type, left_on='key1', right_on='key2')
     df_merge2 = df_merge2.drop(columns=['key1', 'key2', 'Type'])
-    df_price = pd.DataFrame(df.drop(columns=['ticker']).values.reshape(2 * df.drop(columns=['ticker']).values.shape[0], 1), columns=['Price'])
+    df_price = pd.DataFrame(
+        df.drop(columns=['ticker']).values.reshape(2 * df.drop(columns=['ticker']).values.shape[0], 1),
+        columns=['Price'])
     df_final = pd.concat([df_merge, df_merge2, df_price], axis=1)
     return df_final

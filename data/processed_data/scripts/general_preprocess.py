@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as f
@@ -157,10 +158,10 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
     @f.udf
     def connect_string(a, b):
-        if a == None:
-            return  b
-        if b == None:
-            return a
+        if a is None:
+            a = ''
+        if b is None:
+            b = ''
         return a + ' ' + b
 
     df = df.withColumn('AllText', connect_string(df['title'], df['desc']))
@@ -216,6 +217,7 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
 ##########################################  4. Combine all price and sentiment analysis ###################################################
 def main():
+    t0 = time.time()
     # stockprice_rawdata_path_BTC = '../../stock_price/data/cryptocurrency/price_BTC.csv'
     # stockprice_rawdata_path_MARA = '../../stock_price/data/cryptocurrency/price_MARA.csv'
     # stockprice_rawdata_path_RIOT = '../../stock_price/data/cryptocurrency/price_RIOT.csv'
@@ -258,7 +260,7 @@ def main():
     df_final = df_news.join(df2, on=['window'], how='left_outer')
 
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
-
+    print("Elapsed time:", time.time()-t0)
 
 if __name__ == '__main__':
     main()
