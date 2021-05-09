@@ -90,3 +90,5 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 ### 2.1 Raw Data
 ### 2.2 Proprecessed Data
 ## 3. LSTM models
+There are 4 subfolders in model folder, where lstm_2009_5 contains the LSTM models to predict 5 days' prices based on data from 2009 to 2021, etc.
+In each subfolder, one python file builds and trains one LSTM model, and the python file is named by (industry)_(stock)_(data starting year)_(# of prediction days). For example, energy_HFC_2009_5.py returns an LSTM model which predict 5 days' prices based on data from 2009 to 2021.

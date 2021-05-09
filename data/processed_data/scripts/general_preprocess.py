@@ -158,10 +158,10 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
     @f.udf
     def connect_string(a, b):
-        if a == None:
-            return b
-        if b == None:
-            return a
+        if a is None:
+            a = ''
+        if b is None:
+            b = ''
         return a + ' ' + b
 
     df = df.withColumn('AllText', connect_string(df['title'], df['desc']))
@@ -244,8 +244,7 @@ def main():
     stockprice_rawdata_path_COG = '../../stock_price/data/energy/price_COG.csv'
     stockprice_rawdata_path_DVN = '../../stock_price/data/energy/price_DVN.csv'
     stockprice_rawdata_path_HFC = '../../stock_price/data/energy/price_HFC.csv'
-    stockprice_rawdata_path_IXIC = '../../stock_price/data/energy/price_IXIC.csv'
-    news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_Mega_all.csv'
+    news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_large_all.csv'
     spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
 
     sdate = datetime.date(2016, 3, 31)
@@ -254,13 +253,11 @@ def main():
     df_COG = preprocess_price('COG', stockprice_rawdata_path_COG, spark, sdate, edate)
     df_DVN = preprocess_price('DVN', stockprice_rawdata_path_DVN, spark, sdate, edate)
     df_HFC = preprocess_price('HFC', stockprice_rawdata_path_HFC, spark, sdate, edate)
-    df_IXIC = preprocess_price('IXIC', stockprice_rawdata_path_IXIC, spark, sdate, edate)
     df_news = preprocess_news(news_rawdata_path, spark, sdate, edate)
 
     df1 = df_DVN.join(df_HFC, on=['window'], how='left_outer')
     df2 = df_COG.join(df1, on=['window'], how='left_outer')
-    df3 = df_IXIC.join(df2, on=['window'], how='left_outer')
-    df_final = df_news.join(df3, on=['window'], how='left_outer')
+    df_final = df_news.join(df2, on=['window'], how='left_outer')
 
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
     print("Elapsed time:", time.time()-t0)
