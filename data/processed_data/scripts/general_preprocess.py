@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as f
@@ -157,6 +158,10 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
     @f.udf
     def connect_string(a, b):
+        if not a:
+            a = ''
+        if not b:
+            b = ''
         return a + ' ' + b
 
     df = df.withColumn('AllText', connect_string(df['title'], df['desc']))
@@ -212,6 +217,7 @@ def preprocess_news(news_path, spark, startdate, enddate):
 
 ##########################################  4. Combine all price and sentiment analysis ###################################################
 def main():
+    t0 = time.time()
     # stockprice_rawdata_path_BTC = '../../stock_price/data/cryptocurrency/price_BTC.csv'
     # stockprice_rawdata_path_MARA = '../../stock_price/data/cryptocurrency/price_MARA.csv'
     # stockprice_rawdata_path_RIOT = '../../stock_price/data/cryptocurrency/price_RIOT.csv'
@@ -239,8 +245,8 @@ def main():
     stockprice_rawdata_path_DVN = '../../stock_price/data/energy/price_DVN.csv'
     stockprice_rawdata_path_HFC = '../../stock_price/data/energy/price_HFC.csv'
     stockprice_rawdata_path_IXIC = '../../stock_price/data/energy/price_IXIC.csv'
-    news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_large_all.csv'
-    spark = SparkSession.builder.master('local[2]').appName('GeneralDataProcess').getOrCreate()
+    news_rawdata_path = '../../news/data/energy/GoogleNews_Energy_Mega_all.csv'
+    spark = SparkSession.builder.master('local[6]').appName('GeneralDataProcess').getOrCreate()
 
     sdate = datetime.date(2016, 3, 31)
     edate = datetime.date(2021, 4, 16)
@@ -257,7 +263,7 @@ def main():
     df_final = df_news.join(df3, on=['window'], how='left_outer')
 
     df_final.orderBy('window').toPandas().to_csv('../data/processed_data_energy.csv', index=False)
-
+    print("Elapsed time:", time.time()-t0)
 
 if __name__ == '__main__':
     main()

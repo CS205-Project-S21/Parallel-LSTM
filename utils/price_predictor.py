@@ -8,7 +8,7 @@ from keras.models import load_model
 from plotly.subplots import make_subplots
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-from fetchdata import get_stock_price, get_news
+from fetch_data import get_stock_price, get_news
 
 
 def preprocess_stock_price(df, startdate, enddate):

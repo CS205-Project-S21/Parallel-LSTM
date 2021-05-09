@@ -13,8 +13,8 @@ import time
 import pandas as pd
 import yfinance as yf
 import numpy as np
-from fetchgooglenews import GoogleNews
-from fetchcontextweb import fetch_context_web
+from fetch_google_news import GoogleNews
+from fetch_context_web import fetch_context_web
 
 
 def generate_periods(startdate, enddate, length=30, shift=-1):
