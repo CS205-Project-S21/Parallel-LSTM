@@ -22,6 +22,7 @@ from keras.models import Sequential, load_model
 #from sklearn.ensemble import RandomForestRegressor
 #from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error
+import os
 
 #from math import pi,sqrt,exp,pow,log
 #from numpy.linalg import det, inv
@@ -36,15 +37,17 @@ from sklearn.metrics import mean_squared_error
 
 #import matplotlib.pyplot as plt
 
-stock = 'DVN'
+stock = 'HFC'
 industry = 'energy'
+year = '2009'
+prednum = '5'
 
 def main():
     # read data
-    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '.txt')
+    data = pd.read_csv('../../data/processed_data/data/processed_data_' + industry + '_mega_15.csv')
     
     # ratio of train and test data 0.8:0.2
-    data = data.iloc[:-1]
+    # data = data.iloc[:-1]
     # ratio of train and test data 0.8:0.2
     train_len = int(len(data)*0.8)
     test_len = len(data) - train_len
@@ -71,14 +74,14 @@ def main():
         min_max = []
         for i, row in enumerate(df_prices):
             if type(row) == float:
-                print(row)
+                continue
             prices = str2num(row)
             senti = str2num(df_senti[i])
             one_row = []
             for i, p in enumerate(prices[:-3]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
-            y.append(prices[-3])
+            y.append(prices[21:-2])
             min_max.append(prices[-2:])
         x = np.array(x)
         y = np.array(y)
@@ -88,16 +91,16 @@ def main():
     x_test, y_test, min_max_test = input_data(df_prices_test, df_senti_test)
     
     # model parameters setting
+    n = 9
     split = 0.85 # train_data percent
-    sequence_length=21;  # is the window length of a subset
     normalise= True  # normalize 3 features
     batch_size=64;
-    input_dim=2  # ['price','sentiment']
-    input_timesteps=21 # the window length of a training data set
+    input_dim=x_train.shape[2]  # ['price','sentiment']
+    input_timesteps=x_train.shape[1] # the window length of a training data set
     neurons=10  # number of neurons in one LSTM layer
-    epochs=50
+    epochs=200
     prediction_len=1  # predict one day's price
-    dense_output=1  # output size of the last dense layer
+    dense_output=n  # output size of the last dense layer
     drop_out=0.1  # dropout rate
     
     # Build LSTM MODEL
@@ -115,7 +118,7 @@ def main():
     model.fit(x_train,y_train,epochs=epochs,batch_size=batch_size)
     
     #multi sequence predict
-    prediction_seqs = model.predict(x_test).reshape(-1,) # prediction data
+    prediction_seqs = model.predict(x_test) # prediction data
     # !! parallelizable !!
     print('Normalized RMSE on Test set', np.sqrt(mean_squared_error(prediction_seqs, y_test)))
     
@@ -124,19 +127,26 @@ def main():
     
     max_price = np.max(ori_price['Price'])
     min_price = np.min(ori_price['Price'])
-    def denorm(x, min_max):
+    def denorm_n(x, min_max, n):
         de_result = []
         for i, v in enumerate(x):
             min_p, max_p = min_max[i]
-            v_denorm = v * (max_p - min_p) + min_p
+            v_denorm = []
+            for j in range(n):
+                v_denorm.append(x[i][j] * (max_p - min_p) + min_p)
             de_result.append(v_denorm)
         return de_result
     
-    pred_denorm = denorm(prediction_seqs, min_max_test)
-    ytest_denorm = denorm(y_test, min_max_test)
+    pred_denorm = denorm_n(prediction_seqs, min_max_test, n)
+    ytest_denorm = denorm_n(y_test, min_max_test, n)
     print('Industry: ', industry, '; stock: ', stock.upper())
     print('The max price is {0}, the min price is {1}'.format(max_price, min_price))
     print('The RMSE of predictions is', np.sqrt(mean_squared_error(pred_denorm, ytest_denorm)))
+    if os.path.exists('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5'):
+        os.remove('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
+    else:
+        # print("The saved model does not exist")
+        model.save('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
     #plt.plot(y_test, label = 'true')
     #plt.plot(prediction_seqs, label = 'pred')
     #plt.xlabel('days')

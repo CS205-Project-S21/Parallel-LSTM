@@ -39,8 +39,8 @@ from sklearn.metrics import mean_squared_error
 
 stock = 'DVN'
 industry = 'energy'
-year = 2016
-prednum = 5
+year = '2016'
+prednum = '1'
 
 def main():
     # read data

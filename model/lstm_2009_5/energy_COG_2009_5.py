@@ -39,8 +39,8 @@ import os
 
 stock = 'COG'
 industry = 'energy'
-year = 2016
-prednum = 5
+year = '2009'
+prednum = '5'
 
 def main():
     # read data
@@ -81,7 +81,7 @@ def main():
             for i, p in enumerate(prices[:-3]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
-            y.append(prices[-3])
+            y.append(prices[21:-2])
             min_max.append(prices[-2:])
         x = np.array(x)
         y = np.array(y)
@@ -118,7 +118,7 @@ def main():
     model.fit(x_train,y_train,epochs=epochs,batch_size=batch_size)
     
     #multi sequence predict
-    prediction_seqs = model.predict(x_test).reshape(-1,) # prediction data
+    prediction_seqs = model.predict(x_test) # prediction data
     # !! parallelizable !!
     print('Normalized RMSE on Test set', np.sqrt(mean_squared_error(prediction_seqs, y_test)))
     
@@ -127,19 +127,26 @@ def main():
     
     max_price = np.max(ori_price['Price'])
     min_price = np.min(ori_price['Price'])
-    def denorm(x, min_max):
+    def denorm_n(x, min_max, n):
         de_result = []
         for i, v in enumerate(x):
             min_p, max_p = min_max[i]
-            v_denorm = v * (max_p - min_p) + min_p
+            v_denorm = []
+            for j in range(n):
+                v_denorm.append(x[i][j] * (max_p - min_p) + min_p)
             de_result.append(v_denorm)
         return de_result
     
-    pred_denorm = denorm(prediction_seqs, min_max_test)
-    ytest_denorm = denorm(y_test, min_max_test)
+    pred_denorm = denorm_n(prediction_seqs, min_max_test, n)
+    ytest_denorm = denorm_n(y_test, min_max_test, n)
     print('Industry: ', industry, '; stock: ', stock.upper())
     print('The max price is {0}, the min price is {1}'.format(max_price, min_price))
     print('The RMSE of predictions is', np.sqrt(mean_squared_error(pred_denorm, ytest_denorm)))
+    if os.path.exists('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5'):
+        os.remove('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
+    else:
+        # print("The saved model does not exist")
+        model.save('../model_saved/' + industry + '_' + stock + '_'+year +'_' + prednum + '.h5')
     #plt.plot(y_test, label = 'true')
     #plt.plot(prediction_seqs, label = 'pred')
     #plt.xlabel('days')

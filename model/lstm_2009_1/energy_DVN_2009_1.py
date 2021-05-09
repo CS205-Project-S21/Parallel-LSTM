@@ -78,7 +78,7 @@ def main():
             for i, p in enumerate(prices[:-3]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
-            y.append(prices[21])
+            y.append(prices[-3])
             min_max.append(prices[-2:])
         x = np.array(x)
         y = np.array(y)

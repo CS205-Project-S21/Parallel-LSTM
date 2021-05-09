@@ -39,8 +39,8 @@ import os
 
 stock = 'DVN'
 industry = 'energy'
-year = 2016
-prednum = 5
+year = '2016'
+prednum = '5'
 
 def main():
     # read data
