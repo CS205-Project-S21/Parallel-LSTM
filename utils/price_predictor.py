@@ -76,7 +76,7 @@ def preprocess_news(df):
     return scores[:-1]  # exclude the score at today's close time
 
 
-def predict_price(startdate, enddate, model, x, p_min, p_max, plot=True):
+def predict_price(startdate, enddate, model, x, p_min, p_max, title=None):
     def generate_full(sdate, edate):
         full_dates = []
         while sdate <= edate:
@@ -126,6 +126,11 @@ def predict_price(startdate, enddate, model, x, p_min, p_max, plot=True):
         row=1, col=1
     )
 
+    pred_start = datetime.datetime.combine(df['Date'].values[-5], datetime.datetime.min.time()).timestamp() * 1000
+
+    fig.add_vline(x=pred_start, line_dash="dash",
+                  annotation_text="Prediction starts here", annotation_position="bottom left", row=1, col=1)
+
     fig.add_trace(
         go.Scatter(x=df['Date'], y=df['SentimentIntensity']),
         row=1, col=2
@@ -134,7 +139,7 @@ def predict_price(startdate, enddate, model, x, p_min, p_max, plot=True):
     fig['layout']['xaxis']['rangeslider_visible'] = False
     fig['layout']['yaxis']['title'] = 'Price'
     fig['layout']['yaxis2']['title'] = 'News sentiment intensity'
-    fig.update_layout(height=600, width=1500)
+    fig.update_layout(title=go.layout.Title(text=title), height=600, width=1500)
     fig.show()
 
 
@@ -144,7 +149,6 @@ def main():
     parser.add_argument("-t", "--ticker", type=str, help=help, nargs=1)
     args = vars(parser.parse_args())
     ticker = args['ticker'][0]
-    # ticker = 'COG'
     tickers = ['BTC-USD', 'MARA', 'RIOT', 'COG', 'DVN', 'HFC']
 
     if ticker in tickers:
@@ -160,15 +164,18 @@ def main():
 
         print("Prepare data...")
         df_price = get_stock_price(ticker, startdate_str, enddate_str)
-        df_news = get_news('bitcoin', startdate_str, enddate_str, length=1)
-        # df_news = pd.read_csv("news_raw.csv", parse_dates=['datetime'])
+        if ticker in ['BTC-USD', 'MARA', 'RIOT']:
+            keyword = 'bitcoin'
+        else:
+            keyword = 'oil gas energy'
+        df_news = pd.read_csv("news_raw.csv", parse_dates=['datetime'])
         print("\nPreprocess data...")
         price, price_min, price_max = preprocess_stock_price(df_price, startdate, enddate)
         scores = preprocess_news(df_news)
         print("\nLoad model...")
         model = load_model('../model/models_for_prediction/' + ticker + '.h5')
         x_input = np.column_stack((price, scores))[np.newaxis, :, :]  # reshape to (1, 21, 2)
-        predict_price(startdate, enddate, model, x_input, price_min, price_max)
+        predict_price(startdate, enddate, model, x_input, price_min, price_max, title=ticker)
     else:
         print("Select from the following tickers: BTC-USD, MARA, RIOT, COG, DVN, HFC")
 
