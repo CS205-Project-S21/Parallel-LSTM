@@ -1,5 +1,6 @@
 # The Application of Big Data and Big Compute in Stock Price Predictions
 Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
+Project Website: https://sites.google.com/g.harvard.edu/group6/home
 
 ## 1. Project Introduction
 This is a Big Data and Big Compute project to predict stock prices, and analyze how parallel computing improves the prediciton performance. 
@@ -18,15 +19,15 @@ The workflow figure above contains 3 steps:
 ├── data
 │   ├── news
 │   │   ├── data
-│   │   │   ├── cryptocurrency
+│   │   │   ├── cryptocurrency: the google news that contain 'Bitcoin'
 │   │   │   │   └── GoogleNews_Bitcoin_large_all.csv
-│   │   │   └── energy
+│   │   │   └── energy: the google news that contain 'oil' and 'gas'
 │   │   │       ├── GoogleNews_Energy_large_all.csv
 │   │   │       └── GoogleNews_Energy_Mega_all.csv
 │   │   └── scripts
-│   │       ├── GetGoogleNews_Bitcoin_large.ipynb
-│   │       ├── GetGoogleNews_Energy_large.ipynb
-│   │       └── GetGoogleNews_Energy_Mega.ipynb
+│   │       ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
+│   │       ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
+│   │       └── GetGoogleNews_Energy_Mega.ipynb: produce GoogleNews_Energy_Mega_all.csv
 │   ├── processed_data
 │   │   ├── data
 │   │   │   ├── processed_data_cryptocurrency.csv
@@ -137,12 +138,7 @@ The workflow figure above contains 3 steps:
 ├── .gitignore
 └── requirements.txt
 ```
-```
-│   │   │   ├── GoogleNews_Bitcoin_large.csv: the google news that contain 'Bitcoin'
-│   │   │   └── GoogleNews_Energy_large.csv: the google news that contain 'oil' and 'gas'
-│   ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
-│   ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
-```
+
 ## 4. How to use
 
 For stock price prediction, our software can be simply used with following lines of codes:
