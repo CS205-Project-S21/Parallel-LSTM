@@ -166,7 +166,7 @@ def main():
         price, price_min, price_max = preprocess_stock_price(df_price, startdate, enddate)
         scores = preprocess_news(df_news)
         print("\nLoad model...")
-        model = load_model(ticker + '.h5')
+        model = load_model('../model/models_for_prediction/' + ticker + '.h5')
         x_input = np.column_stack((price, scores))[np.newaxis, :, :]  # reshape to (1, 21, 2)
         predict_price(startdate, enddate, model, x_input, price_min, price_max)
     else:
