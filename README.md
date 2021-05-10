@@ -14,23 +14,31 @@ The workflow figure above contains 3 steps:
 ## 3. Directory structure
 
 ```
-├.
-├── .gitignore
+.
 ├── data
 │   ├── news
 │   │   ├── data
 │   │   │   ├── cryptocurrency
 │   │   │   │   └── GoogleNews_Bitcoin_large_all.csv
 │   │   │   └── energy
-│   │   │       └── GoogleNews_Energy_large_all.csv
+│   │   │       ├── GoogleNews_Energy_large_all.csv
+│   │   │       └── GoogleNews_Energy_Mega_all.csv
 │   │   └── scripts
 │   │       ├── GetGoogleNews_Bitcoin_large.ipynb
-│   │       └── GetGoogleNews_Energy_large.ipynb
+│   │       ├── GetGoogleNews_Energy_large.ipynb
+│   │       └── GetGoogleNews_Energy_Mega.ipynb
 │   ├── processed_data
 │   │   ├── data
-│   │   │   └── processed_data_energy.csv
+│   │   │   ├── processed_data_cryptocurrency.csv
+│   │   │   ├── processed_data_cryptocurrency_15.csv
+│   │   │   ├── processed_data_cryptocurrency_short.csv
+│   │   │   ├── processed_data_energy.csv
+│   │   │   ├── processed_data_energy_15.csv
+│   │   │   ├── processed_data_energy_mega_15.csv
+│   │   │   └── processed_data_energy_short.csv
 │   │   └── scripts
-│   │       └── General_PreProcess.py
+│   │       ├── general_preprocess.py
+│   │       └── general_preprocess_twitter.py
 │   ├── stock_price
 │   │   ├── data
 │   │   │   ├── cryptocurrency
@@ -39,9 +47,13 @@ The workflow figure above contains 3 steps:
 │   │   │   │   ├── price_MARA.csv
 │   │   │   │   └── price_RIOT.csv
 │   │   │   └── energy
+│   │   │       ├── COG_large.csv
+│   │   │       ├── DVN_large.csv
+│   │   │       ├── HFC_large.csv
 │   │   │       ├── price_COG.csv
 │   │   │       ├── price_DVN.csv
-│   │   │       └── price_HFC.csv
+│   │   │       ├── price_HFC.csv
+│   │   │       └── price_IXIC.csv
 │   │   └── scripts
 │   │       └── download_historical_price.py
 │   └── twitter
@@ -61,31 +73,69 @@ The workflow figure above contains 3 steps:
 │           ├── download_streaming_tweets.py
 │           ├── process_streaming_tweets.py
 │           └── visualize_streaming_tweets.py
-├── docs
-│   └── pictures
-│       └── workflow.png
 ├── model
-│   ├── LSTM_DP_altered.ipynb
-│   └── LSTM_DP_altered.py
+│   ├── lstm_2009_1
+│   │   ├── energy_COG_2009_1.py
+│   │   ├── energy_DVN_2009_1.py
+│   │   └── energy_HFC_2009_1.py
+│   ├── lstm_2009_5
+│   │   ├── energy_COG_2009_5.py
+│   │   ├── energy_DVN_2009_5.py
+│   │   └── energy_HFC_2009_5.py
+│   ├── lstm_2016_1
+│   │   ├── crypto_BTC_2016_1.py
+│   │   ├── crypto_MARA_2016_1.py
+│   │   ├── crypto_RIOT_2016_1.py
+│   │   ├── energy_COG_2016_1.py
+│   │   ├── energy_DVN_2016_1.py
+│   │   └── energy_HFC_2016_1.py
+│   ├── lstm_2016_5
+│   │   ├── crypto_BTC_2016_5.py
+│   │   ├── crypto_MARA_2016_5.py
+│   │   ├── crypto_RIOT_2016_5.py
+│   │   ├── energy_COG_2016_5.py
+│   │   ├── energy_DVN_2016_5.py
+│   │   └── energy_HFC_2016_5.py
+│   ├── model_saved
+│   │   ├── cryptocurrency_BTC_2016_1.h5
+│   │   ├── cryptocurrency_BTC_2016_5.h5
+│   │   ├── cryptocurrency_MARA_2016_1.h5
+│   │   ├── cryptocurrency_MARA_2016_5.h5
+│   │   ├── cryptocurrency_RIOT_2016_1.h5
+│   │   ├── cryptocurrency_RIOT_2016_5.h5
+│   │   ├── energy_COG_2009_1.h5
+│   │   ├── energy_COG_2009_5.h5
+│   │   ├── energy_COG_2016_1.h5
+│   │   ├── energy_cog_2016_5.h5
+│   │   ├── energy_DVN_2009_1.h5
+│   │   ├── energy_DVN_2009_5.h5
+│   │   ├── energy_DVN_2016_1.h5
+│   │   ├── energy_DVN_2016_5.h5
+│   │   ├── energy_HFC_2009_1.h5
+│   │   ├── energy_HFC_2009_5.h5
+│   │   ├── energy_HFC_2016_1.h5
+│   │   └── energy_HFC_2016_5.h5
+│   ├── models_for_prediction
+│   │   ├── BTC-USD.h5
+│   │   ├── COG.h5
+│   │   ├── DVN.h5
+│   │   ├── HFC.h5
+│   │   ├── MARA.h5
+│   │   └── RIOT.h5
+│   ├── readme.txt
+│   └── short
+│       ├── LSTM_energy_COG_short.py
+│       └── LSTM_energy_short.ipynb
+├── utils
+│   ├── fetch_context_web.py
+│   ├── fetch_data.py
+│   ├── fetch_google_news.py
+│   └── price_predictor.py
 ├── playground
-│   ├── BingNewsAPI.ipynb
-│   ├── CombineSentimentStock.ipynb
-│   ├── ContextualWebSeachAPI.ipynb
-│   ├── DataPipline_test.ipynb
-│   ├── DL_Clean_from_3Sources.ipynb
-│   ├── GetGoogleNews.ipynb
-│   ├── GetNews.ipynb
-│   ├── GoogleNewsPackage.ipynb
-│   ├── ModifyGoogleNews.ipynb
-│   ├── NewsAPI.ipynb
-│   ├── NewsAPI_Notes.md
-│   ├── NewsCatcher.ipynb
-│   └── price_correlation.ipynb
+├── docs
 ├── README.md
-├── requirements.txt
-└── utils
-    ├── fetchcontextweb.py
-    └── fetchgooglenews.py
+├── .gitignore
+└── requirements.txt
 ```
 ```
 │   │   │   ├── GoogleNews_Bitcoin_large.csv: the google news that contain 'Bitcoin'
@@ -93,7 +143,36 @@ The workflow figure above contains 3 steps:
 │   ├── GetGoogleNews_Energy_large.ipynb: produce GoogleNews_Energy_large_all.csv
 │   ├── GetGoogleNews_Bitcoin_large.ipynb: produce GoogleNews_Bitcoin_large_all.csv
 ```
-## 4. Instructions for running
+## 4. How to use
+
+For stock price prediction, our software can be simply used with following lines of codes:
+
+Step 1: Clone this repo with 
+```
+git clone -b main https://github.com/CS205-Project-S21/Parallel-LSTM.git
+```
+
+Step 2: Install related packages
+```
+pip install Pararrel-LSTM/requirements.txt
+```
+We recommand you to create a virutal environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
+```
+conda create -n stock_price python==3.8
+conda activate stock_price
+```
+
+Step 3: Change into working directory and run command
+```
+cd Pararrel-LSTM/utils
+python price_predictor.py --ticker <stock-ticker>
+```
+You can replace the `<stock-ticker>` with one in the following list: `[BTC-USD, MARA, RIOT, COG, DVN, HFC]`. The software will present the prediction in great plots.
+
+<img src="./docs/usage_processed.gif" width="800" />
+
+
+
 ## 5. Preprocessing of Data
 ### 2.1 Raw Data
 ### 2.2 Proprecessed Data
