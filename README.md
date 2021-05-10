@@ -4,7 +4,7 @@ Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
 ## 1. Project Introduction
 This is a Big Data and Big Compute project to predict stock prices, and analyze how parallel computing improves the prediciton performance. 
 
-There are many published models to predict stock prices, but the data processing and model training on time-series data take long time. Big Data and Big Compute are good methods to solve these issues. In this project, We predict future stock prices based on previous stock prices and google news by LSTM models, and improve the runtime performance by parallel computing techniques, e.g. spark, hadoop, loop unrolling, and etc.  
+There are many published models to predict stock prices, but the data processing and model training on time-series data take long time. Big Data and Big Compute are good methods to solve these issues. In this project, We predict future stock prices based on previous stock prices and google news by LSTM models, and improve the runtime performance by parallel data processing with Spark and parallel model training with GPU on Harvard Cannon.
 ## 2. Workflow
 ![](./docs/pictures/workflow.png)
 The workflow figure above contains 3 steps:
