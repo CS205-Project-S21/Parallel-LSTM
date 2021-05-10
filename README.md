@@ -153,14 +153,16 @@ git clone -b main https://github.com/CS205-Project-S21/Parallel-LSTM.git
 ```
 
 Step 2: Install related packages
-```
-pip install Pararrel-LSTM/requirements.txt
-```
-We recommand you to create a virutal environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
+We recommand you to first create a virutal environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
 ```
 conda create -n stock_price python==3.8
 conda activate stock_price
 ```
+Then run:
+```
+pip install Pararrel-LSTM/requirements.txt
+```
+
 
 Step 3: Change into working directory and run command
 ```
