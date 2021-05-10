@@ -75,7 +75,7 @@ def main():
             prices = str2num(row)
             senti = str2num(df_senti[i])
             one_row = []
-            for i, p in enumerate(prices[:-3]):
+            for i, p in enumerate(prices[:21]):
                 one_row.append([p, senti[i]])
             x.append(one_row)
             y.append(prices[21])
@@ -137,6 +137,7 @@ def main():
 
     if os.path.exists('../model_saved/' + industry + '_' + stock + '_2009_1.h5'):
         os.remove('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
+        model.save('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
     else:
         # print("The saved model does not exist")
         model.save('../model_saved/' + industry + '_' + stock + '_2009_1.h5')
