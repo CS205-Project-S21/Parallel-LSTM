@@ -208,12 +208,12 @@ Latency: rtt min/avg/max/mdev = 0.311/0.339/0.363/0.021 ms
 Bandwidth: 
 	Interval: 0.0-10.0sec, Transfer: 1.22GBytes, Bandwidth: 1.05Gbits/sec
 
-More related information can be found in data/processed_data/readme.txt
+More detailed information can be found in data/processed_data/readme.txt
 
 ### 7.2 Specs for training LSTM models in parallel
 Harvard Cluster seas_dgx1 partition
 CPU: Intel(R) Xeon(R) CPU E5-2698 v4 @ 2.20GHz
 GPU: Tesla V100-SXM2-16GB
-More related information can be found in model/readme.txt
+More detailed information can be found in model/readme.txt
 
 
