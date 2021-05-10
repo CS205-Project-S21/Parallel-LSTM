@@ -10,7 +10,7 @@ There are many published models to predict stock prices, but the data processing
 The workflow figure above contains 3 steps:
 - Our data are composed of 2 parts, Google News and Yahoo Finance Historical Market Data. We fetched these data by the get_news() and get_stock_price() functions in fetch_data.py. 
 - Then we process the raw data by general_preprocess.py. 
-- Finally we train the LSTM models based on the processed data on SLURM. 
+- Finally we train the LSTM models based on the processed data on Harvard Cannon. 
 ## 3. Directory structure
 
 ```
@@ -176,11 +176,15 @@ You can replace the `<stock-ticker>` with one in the following list: `[BTC-USD, 
 
 
 ## 5. Preprocessing of Data
-### 2.1 Raw Data
-### 2.2 Proprecessed Data
+### 5.1 Raw Data
+The raw data are stored in the data/stock_price/data/ and data/news/data/ directories.
+### 5.2 Preprocessed Data
+The preprocessed data are stored in the data/processed_data/data directory.
+
+For detailed explanations of our data types, sources and data processing techniques, please refer to our website https://sites.google.com/g.harvard.edu/group6/home.
 ## 6. LSTM models
 LSTM models are popular time-series models used to predict stock prices. We built LSTM models based on a publication [DP-LSTM: Differential Privacy-inspired LSTM for Stock Prediction Using Financial News](https://arxiv.org/pdf/1912.10806v1.pdf).
-### 6(1) Comparison of Models based on Different Datasets
+### 6.1 Comparison of Models based on Different Datasets
 The improvements on LSTM model training by parallel computing may be different for stock prices in different industry and different prediciton windows. To test the scalability of the parallel computing in model training, we build and train LSTM models with the following datasets of different industries and time ranges.
 - Industry: 
   - cryptocurrency: BTC-USD, MARA, RIOT
@@ -192,5 +196,5 @@ The improvements on LSTM model training by parallel computing may be different f
 There are 4 subfolders in model folder, e.g. lstm_2009_5 contains the LSTM models to predict 5 days' prices based on data from 2009 to 2021, and other subfolders follow the same naming method.
 In each subfolder, one python file builds and trains one LSTM model, and the python files are named by (industry)_(stock)_(data starting year)_(# of prediction days). For example, energy_HFC_2009_5.py returns an LSTM model which predict 5 days' prices based on data from 2009 to 2021.
 
-### 6(2) Model Training by cuDNN and GPU 
+### 6.2 Model Training by cuDNN and GPU 
 In general, LSTM training is sequential, which takes long time. We apply CUDA Deep Neural Network (cuDNN) and GPU to LSTM training and get practical speedup = 3 compared to CPU training.
