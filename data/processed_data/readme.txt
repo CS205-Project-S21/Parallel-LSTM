@@ -34,7 +34,8 @@ NUMA node0 CPU(s):     0-15
 
 Multi-instance test:
 
-AWS: emr-6.3.0: Spark 3.1.1 on Hadoop 3.2.1 with 1-8 core instances (m4.xlarge)python == 3.9.1
+AWS: emr-6.3.0: Spark 3.1.1 on Hadoop 3.2.1 with 1-8 core instances (m4.xlarge)
+python == 3.9.1
 
 CPU_Info:
 Architecture:          x86_64
