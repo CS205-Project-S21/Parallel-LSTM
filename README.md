@@ -147,13 +147,13 @@ The workflow figure above contains 3 steps:
 
 For stock price prediction, our software can be simply used with following lines of codes:
 
-Step 1: Clone this repo with 
+Step 1: Clone this repo with: 
 ```
 git clone -b main https://github.com/CS205-Project-S21/Parallel-LSTM.git
 ```
 
-Step 2: Install related packages
-We recommand you to first create a virutal environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
+Step 2: Install related packages:
+We recommend you to first create a virtual environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
 ```
 conda create -n stock_price python==3.8
 conda activate stock_price
@@ -164,7 +164,7 @@ pip install Pararrel-LSTM/requirements.txt
 ```
 
 
-Step 3: Change into working directory and run command
+Step 3: Change into working directory and run command:
 ```
 cd Pararrel-LSTM/utils
 python price_predictor.py --ticker <stock-ticker>
