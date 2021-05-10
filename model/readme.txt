@@ -1,3 +1,4 @@
+The following is the specs of Harvard Cannon virtual machines where we trained our LSTM models in parallel.
 
 log1: COG_2009_1, without GPU, 3s45ms
 log2: COG_2009_1, with GPU, 1s12ms
