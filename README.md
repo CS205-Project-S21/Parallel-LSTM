@@ -177,7 +177,7 @@ You can replace the `<stock-ticker>` with one in the following list: `[BTC-USD, 
 
 ## 5. Preprocessing of Data
 ### 5.1 Raw Data
-The raw data are stored in the data/stock_price/data/ and data/news/data/ directories.
+The raw data are stored in data/stock_price/data/ and data/news/data/ directories.
 ### 5.2 Preprocessed Data
 The preprocessed data are stored in the data/processed_data/data directory.
 
