@@ -37,9 +37,10 @@ The workflow figure above contains 3 steps:
 │   │   │   ├── processed_data_energy_15.csv
 │   │   │   ├── processed_data_energy_mega_15.csv
 │   │   │   └── processed_data_energy_short.csv
-│   │   └── scripts
-│   │       ├── general_preprocess.py
-│   │       └── general_preprocess_twitter.py
+│   │   ├── scripts
+│   │   |   ├── general_preprocess.py
+│   │   |   └── general_preprocess_twitter.py
+│   |   └── readme.txt
 │   ├── stock_price
 │   │   ├── data
 │   │   │   ├── cryptocurrency
@@ -194,3 +195,25 @@ In each subfolder, one python file builds and trains one LSTM model, and the pyt
 
 ### 6.2 Model Training by cuDNN and GPU 
 In general, LSTM training is sequential, which takes long time. We apply CUDA Deep Neural Network (cuDNN) and GPU to LSTM training and get practical speedup = 3 compared to CPU training.
+
+## 7. Working specs
+
+### 7.1 Specs for the parallel computing of preprocessing data 
+For multi-core test, we use the AWS EC2: Ubuntu 18.04, m4.4xlarge(16vcpus + 64GiB memory)
+
+For multi-instance test, we use AWS EMR: emr-6.3.0: Spark 3.1.1 on Hadoop 3.2.1 with 1-8 core instances (m4.xlarge)
+
+Latency: rtt min/avg/max/mdev = 0.311/0.339/0.363/0.021 ms 
+
+Bandwidth: 
+	Interval: 0.0-10.0sec, Transfer: 1.22GBytes, Bandwidth: 1.05Gbits/sec
+
+More related information can be found in data/processed_data/readme.txt
+
+### 7.2 Specs for training LSTM models in parallel
+Harvard Cluster seas_dgx1 partition
+CPU: Intel(R) Xeon(R) CPU E5-2698 v4 @ 2.20GHz
+GPU: Tesla V100-SXM2-16GB
+More related information can be found in model/readme.txt
+
+
