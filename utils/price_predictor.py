@@ -168,7 +168,7 @@ def main():
             keyword = 'bitcoin'
         else:
             keyword = 'oil gas energy'
-        df_news = pd.read_csv("news_raw.csv", parse_dates=['datetime'])
+        df_news = get_news(keyword, startdate_str, enddate_str, length=1)
         print("\nPreprocess data...")
         price, price_min, price_max = preprocess_stock_price(df_price, startdate, enddate)
         scores = preprocess_news(df_news)
