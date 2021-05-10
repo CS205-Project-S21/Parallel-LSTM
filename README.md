@@ -185,7 +185,7 @@ For detailed explanations of our data types, sources and data preprocessing tech
 ## 6. LSTM models
 LSTM models are popular time-series models used to predict stock prices. We built LSTM models based on a publication [DP-LSTM: Differential Privacy-inspired LSTM for Stock Prediction Using Financial News](https://arxiv.org/pdf/1912.10806v1.pdf).
 ### 6.1 Comparison of Models based on Different Datasets
-The improvements on LSTM model training by parallel computing may be different for stock prices in different industry and different prediciton windows. To test the scalability of the parallel computing in model training, we build and train LSTM models with the following datasets of different industries and time ranges.
+The improvements on LSTM model training by parallel computing may be different for stock prices in different industries. To test the scalability of the parallel computing in model training, we build and train LSTM models with the following datasets of 2 different industries and time ranges.
 - Industry: 
   - cryptocurrency: BTC-USD, MARA, RIOT
   - energy: COG, DVN, HFC
