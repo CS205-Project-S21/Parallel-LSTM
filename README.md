@@ -193,7 +193,7 @@ The improvements on LSTM model training by parallel computing may be different f
   - cryptocurrency: year 2016-2021
   - energy: year 2009-2021
 
-There are 4 subfolders in model folder, e.g. lstm_2009_5 contains the LSTM models to predict 5 days' prices based on data from 2009 to 2021, and other subfolders follow the same naming method.
+The models are stored in the model directory using the naming convention lstm_the earliest year of data_# of prediction days, e.g., lstm_2009_5 contains the LSTM models to predict 5 days' prices based on data from 2009 to 2021, and other subfolders follow the same naming method.
 In each subfolder, one python file builds and trains one LSTM model, and the python files are named by (industry)_(stock)_(data starting year)_(# of prediction days). For example, energy_HFC_2009_5.py returns an LSTM model which predict 5 days' prices based on data from 2009 to 2021.
 
 ### 6.2 Model Training by cuDNN and GPU 
