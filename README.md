@@ -181,7 +181,7 @@ The raw data are stored in data/stock_price/data/ and data/news/data/ directorie
 ### 5.2 Preprocessed Data
 The preprocessed data are stored in the data/processed_data/data directory.
 
-For detailed explanations of our data types, sources and data processing techniques, please refer to our website https://sites.google.com/g.harvard.edu/group6/home.
+For detailed explanations of our data types, sources and data preprocessing techniques, please refer to our website https://sites.google.com/g.harvard.edu/group6/home.
 ## 6. LSTM models
 LSTM models are popular time-series models used to predict stock prices. We built LSTM models based on a publication [DP-LSTM: Differential Privacy-inspired LSTM for Stock Prediction Using Financial News](https://arxiv.org/pdf/1912.10806v1.pdf).
 ### 6.1 Comparison of Models based on Different Datasets
