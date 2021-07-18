@@ -1,5 +1,6 @@
 # The Application of Big Data and Big Compute in Stock Price Predictions
-Team Members: Minhuan Li, Yichen Geng, Tianlei He, Lihong Zhang
+Team Members:Lihong Zhang, Minhuan Li, Yichen Geng, Tianlei He
+
 Project Website: https://sites.google.com/g.harvard.edu/group6/home
 
 ## 1. Project Introduction
