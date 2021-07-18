@@ -1,7 +1,6 @@
 '''
 This is a wrap-up script for users to download raw news and raw price datas.
 
-Minhuan Li, minhuanli@g.harvard.edu, May 7 2021
 '''
 
 __all__ = ['get_news', 'get_stock_price']
