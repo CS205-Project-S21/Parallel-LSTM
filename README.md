@@ -3,17 +3,47 @@ Team Members:Lihong Zhang, Minhuan Li, Yichen Geng, Tianlei He
 
 Project Website: https://sites.google.com/g.harvard.edu/group6/home
 
-## 1. Project Introduction
+## 1. How to use
+
+For stock price prediction, our software can be simply used with following lines of codes:
+
+Step 1: Clone this repo with: 
+```
+git clone -b main https://github.com/CS205-Project-S21/Parallel-LSTM.git
+```
+
+Step 2: Install related packages:
+We recommend you to first create a virtual environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
+```
+conda create -n stock_price python==3.8
+conda activate stock_price
+```
+Then run:
+```
+pip install Pararrel-LSTM/requirements.txt
+```
+
+
+Step 3: Change into working directory and run command:
+```
+cd Pararrel-LSTM/utils
+python price_predictor.py --ticker <stock-ticker>
+```
+You can replace the `<stock-ticker>` with one in the following list: `[BTC-USD, MARA, RIOT, COG, DVN, HFC]`. The software will present the prediction in great plots.
+
+<img src="./docs/usage_processed.gif" width="800" />
+
+## 2. Project Introduction
 This is a Big Data and Big Compute project to predict stock prices, and analyze how parallel computing improves the prediciton performance. 
 
 There are many published models to predict stock prices, but the data processing and model training on time-series data take long time. Big Data and Big Compute are good methods to solve these issues. In this project, We predict future stock prices based on previous stock prices and google news by LSTM models, and improve the runtime performance by parallel data processing with Spark and parallel model training with GPU on Harvard Cannon.
-## 2. Workflow
+## 3. Workflow
 ![](./docs/pictures/workflow.png)
 The workflow figure above contains 3 steps:
 - Our data are composed of 2 parts, Google News and Yahoo Finance Historical Market Data. We fetched these data by the get_news() and get_stock_price() functions in fetch_data.py. 
 - Then we process the raw data by general_preprocess.py. 
 - Finally we train the LSTM models based on the processed data on Harvard Cannon. 
-## 3. Directory structure
+## 4. Directory structure
 
 ```
 .
@@ -141,35 +171,6 @@ The workflow figure above contains 3 steps:
 └── requirements.txt
 ```
 
-## 4. How to use
-
-For stock price prediction, our software can be simply used with following lines of codes:
-
-Step 1: Clone this repo with: 
-```
-git clone -b main https://github.com/CS205-Project-S21/Parallel-LSTM.git
-```
-
-Step 2: Install related packages:
-We recommend you to first create a virtual environment with [conda](https://docs.conda.io/en/latest/miniconda.html) and do this step in the virtual environment:
-```
-conda create -n stock_price python==3.8
-conda activate stock_price
-```
-Then run:
-```
-pip install Pararrel-LSTM/requirements.txt
-```
-
-
-Step 3: Change into working directory and run command:
-```
-cd Pararrel-LSTM/utils
-python price_predictor.py --ticker <stock-ticker>
-```
-You can replace the `<stock-ticker>` with one in the following list: `[BTC-USD, MARA, RIOT, COG, DVN, HFC]`. The software will present the prediction in great plots.
-
-<img src="./docs/usage_processed.gif" width="800" />
 
 
 
