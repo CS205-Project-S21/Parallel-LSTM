@@ -165,7 +165,7 @@ The workflow figure above contains 3 steps:
 │   ├── fetch_google_news.py
 │   └── price_predictor.py
 ├── playground: various attemps of data processing and modelling
-├── docs: documentation of the software
+├── docs: attached documents for README.md
 ├── README.md
 ├── .gitignore
 └── requirements.txt
