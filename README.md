@@ -47,7 +47,7 @@ The workflow figure above contains 3 steps:
 
 ```
 .
-├── data
+├── data: price and news data
 │   ├── news
 │   │   ├── data
 │   │   │   ├── cryptocurrency: the google news that contain 'Bitcoin'
@@ -106,7 +106,7 @@ The workflow figure above contains 3 steps:
 │           ├── download_streaming_tweets.py
 │           ├── process_streaming_tweets.py
 │           └── visualize_streaming_tweets.py
-├── model
+├── model: the trained LSTM models ready for predicting
 │   ├── lstm_2009_1
 │   │   ├── energy_COG_2009_1.py
 │   │   ├── energy_DVN_2009_1.py
@@ -159,13 +159,13 @@ The workflow figure above contains 3 steps:
 │   └── short
 │       ├── LSTM_energy_COG_short.py
 │       └── LSTM_energy_short.ipynb
-├── utils
+├── utils: utility codes for fetching data
 │   ├── fetch_context_web.py
 │   ├── fetch_data.py
 │   ├── fetch_google_news.py
 │   └── price_predictor.py
-├── playground
-├── docs
+├── playground: various attemps of data processing and modelling
+├── docs: documentation of the software
 ├── README.md
 ├── .gitignore
 └── requirements.txt
