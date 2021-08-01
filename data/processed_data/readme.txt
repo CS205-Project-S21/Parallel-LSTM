@@ -1,4 +1,4 @@
-The following is the specs of AWS EC2 and EMR instance we use to do the parallel computing
+The following are the specs of AWS EC2 and EMR instances we used to operate the parallel computing
 
 Multi-Core test:
 AWS: Ubuntu 18.04, m4.4xlarge(16vcpus + 64GiB memory)
