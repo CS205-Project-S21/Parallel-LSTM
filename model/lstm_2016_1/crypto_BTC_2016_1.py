@@ -1,5 +1,5 @@
 '''
-# LSTM model
+# LSTM model for BTC based on data from 2016 to 2021
 from https://github.com/Xinyi6/DP-LSTM-Differential-Privacy-inspired-LSTM-for-Stock-Prediction-Using-Financial-News and make some changes
 
 ### Where we can use big compute:
